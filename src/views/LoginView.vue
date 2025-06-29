@@ -1,5 +1,5 @@
 <template>
-  <NavbarAuth />
+<!--  <NavbarAuth />-->
   <main>
     <FormLogin />
     <SloganAuth />
@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import NavbarAuth from '@/components/Auth/NavbarAuth.vue'
+// import NavbarAuth from '@/components/Auth/NavbarAuth.vue'
 import FormLogin from '@/components/Auth/FormLogin.vue'
 import SloganAuth from '@/components/Auth/SloganAuth.vue'
 </script>

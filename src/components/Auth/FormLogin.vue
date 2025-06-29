@@ -7,7 +7,7 @@
       <p class="page-link">
         <span class="page-link-label">Esqueceu a senha?</span>
       </p>
-      <button class="form-btn">Entrar</button>
+      <button class="form-btn" @click="login">Entrar</button>
     </form>
     <p class="sign-up-label">Não tem uma conta?<span class="sign-up-link">Inscrever-se</span></p>
     <div class="buttons-container">
@@ -53,9 +53,31 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useMessage } from 'naive-ui'
+import AuthService from '@/class/services/AuthService.ts'
+import type { IAuthInputRequest } from '@/@types/IAuthInputRequest.ts'
+import router from '@/router'
 
+const authService = new AuthService()
+
+const toast = useMessage()
 const email = ref<string>('')
 const password = ref<string>('')
+
+const login = async (e: MouseEvent) => {
+  e.preventDefault()
+
+  const data: IAuthInputRequest = {
+    email: email.value,
+    password: password.value,
+  }
+
+  if (!authService.inputAuthIsValid(data)) toast.error('Digite um email e senha válido!')
+
+  await authService.login(data)
+
+  await router.push({ name: 'home' })
+}
 </script>
 
 <style scoped lang="scss">
