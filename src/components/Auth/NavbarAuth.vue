@@ -9,5 +9,10 @@
 </script>
 
 <style scoped lang="scss">
+@use "@/assets/base.scss" as *;
 
+nav {
+  height: $height-navbar;
+  background-color: yellow;
+}
 </style>
