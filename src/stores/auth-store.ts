@@ -39,5 +39,8 @@ export const useAuthStore = defineStore('auth', {
         }
       }
     },
+    isUserAutenticado(): boolean {
+      return this.user != null;
+    }
   },
 })
