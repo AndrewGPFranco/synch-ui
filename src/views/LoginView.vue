@@ -2,13 +2,13 @@
   <main>
     <section class="container-image"></section>
     <div class="content">
-      <FormLogin />
+      <FormAuth />
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
-import FormLogin from '@/components/Auth/FormLogin.vue'
+import FormAuth from '@/components/Auth/FormAuth.vue'
 </script>
 
 <style scoped lang="scss">
