@@ -1,6 +1,6 @@
 <template>
   <section>
-    <i class="pi-google"></i>
+
   </section>
 </template>
 

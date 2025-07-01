@@ -15,7 +15,7 @@
         </template>
         <FormLogin />
       </n-tab-pane>
-      <n-tab-pane name="signup" tab="Registrar">
+      <n-tab-pane name="signup">
         <template #tab>
           <span style="color: #c056c0; font-size: 1.2em; font-weight: 600">Registrar</span>
         </template>

@@ -65,6 +65,7 @@ const login = async (e: MouseEvent) => {
   padding: 20px 0;
   display: flex;
   flex-direction: column;
+  max-height: 100vh;
 
   .tab-content {
     display: flex;

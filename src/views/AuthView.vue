@@ -23,7 +23,7 @@ main {
     background-position: left;
     background-size: cover;
     background-repeat: no-repeat;
-    background-image: url('@/assets/login.jpg');
+    background-image: url('@/assets/login.avif');
   }
 }
 </style>
