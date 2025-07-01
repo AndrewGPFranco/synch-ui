@@ -1,15 +1,14 @@
 <template>
-<!--  <NavbarAuth />-->
   <main>
-    <FormLogin />
-    <SloganAuth />
+    <section class="container-image"></section>
+    <div class="content">
+      <FormLogin />
+    </div>
   </main>
 </template>
 
 <script setup lang="ts">
-// import NavbarAuth from '@/components/Auth/NavbarAuth.vue'
 import FormLogin from '@/components/Auth/FormLogin.vue'
-import SloganAuth from '@/components/Auth/SloganAuth.vue'
 </script>
 
 <style scoped lang="scss">
@@ -17,9 +16,14 @@ import SloganAuth from '@/components/Auth/SloganAuth.vue'
 
 main {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10em 20em;
-  height: calc(100vh - $height-navbar);
+
+  .container-image {
+    width: 55vw;
+    height: 100vh;
+    background-position: left;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: url('@/assets/login.jpg');
+  }
 }
 </style>
