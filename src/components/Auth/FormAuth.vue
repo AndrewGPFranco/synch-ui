@@ -19,6 +19,7 @@
         <template #tab>
           <span style="color: #c056c0; font-size: 1.2em; font-weight: 600">Registrar</span>
         </template>
+        <FormRegister />
       </n-tab-pane>
     </n-tabs>
   </section>
@@ -27,6 +28,7 @@
 <script setup lang="ts">
 import { NTabPane, NTabs } from 'naive-ui'
 import FormLogin from '@/components/Auth/login/FormLogin.vue'
+import FormRegister from '@/components/Auth/register/FormRegister.vue'
 </script>
 
 <style scoped lang="scss">

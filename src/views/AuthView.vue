@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import FormAuth from "@/components/Auth/FormAuth.vue"
+import FormAuth from '@/components/Auth/FormAuth.vue'
 </script>
 
 <style scoped lang="scss">
