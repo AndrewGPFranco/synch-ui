@@ -20,6 +20,10 @@ class AuthService {
   async updateUserInformation(): Promise<void> {
     await this.authStore.updateUserInformation(null, null)
   }
+
+  logout(): void {
+    localStorage.removeItem('token');
+  }
 }
 
 export default AuthService
