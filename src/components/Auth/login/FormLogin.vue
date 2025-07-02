@@ -2,11 +2,22 @@
   <section class="tab-login">
     <div class="tab-content">
       <label for="email">Email</label>
-      <n-input v-model:value="email" type="text" placeholder="Digite o seu email" />
+      <n-input
+        v-model:value="email"
+        type="text"
+        placeholder="Digite o seu email"
+        @keydown.enter="login"
+      />
     </div>
     <div class="tab-content">
       <label for="password">Senha</label>
-      <n-input v-model:value="password" type="password" show-password-on="mousedown" placeholder="Digite sua senha" />
+      <n-input
+        v-model:value="password"
+        type="password"
+        show-password-on="mousedown"
+        placeholder="Digite sua senha"
+        @keydown.enter="login"
+      />
     </div>
     <button class="btn-login" @click="login">Entrar</button>
     <div class="line-separator"></div>
@@ -36,7 +47,7 @@ const toast = useMessage()
 const email = ref<string>('')
 const password = ref<string>('')
 
-const login = async (e: MouseEvent) => {
+const login = async (e: MouseEvent | KeyboardEvent) => {
   e.preventDefault()
 
   const data: IAuthInputRequest = {
@@ -50,7 +61,7 @@ const login = async (e: MouseEvent) => {
     await authService.login(data)
     await router.push({ name: 'home' })
   } catch (error) {
-    toast.error(String(error));
+    toast.error(String(error))
   }
 }
 </script>
@@ -112,10 +123,12 @@ const login = async (e: MouseEvent) => {
   .line-separator {
     width: 100%;
     height: 1px;
-    background: linear-gradient(90deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.2) 50%,
-        transparent 100%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      transparent 100%
+    );
     margin: 25px 0;
     position: relative;
 
