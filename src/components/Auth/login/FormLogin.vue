@@ -6,12 +6,7 @@
     </div>
     <div class="tab-content">
       <label for="password">Senha</label>
-      <n-input
-        v-model:value="password"
-        type="password"
-        show-password-on="mousedown"
-        placeholder="Digite sua senha"
-      />
+      <n-input v-model:value="password" type="password" show-password-on="mousedown" placeholder="Digite sua senha" />
     </div>
     <button class="btn-login" @click="login">Entrar</button>
     <div class="line-separator"></div>
@@ -117,12 +112,10 @@ const login = async (e: MouseEvent) => {
   .line-separator {
     width: 100%;
     height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.2) 50%,
-      transparent 100%
-    );
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 100%);
     margin: 25px 0;
     position: relative;
 
@@ -209,6 +202,7 @@ const login = async (e: MouseEvent) => {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

@@ -44,7 +44,6 @@ export const useAuthStore = defineStore('auth', {
       return this.user != null
     },
     async register(data: IUserRegister): Promise<void> {
-      console.log(data)
       await api.post('/api/v1/user/register', data)
     }
   },

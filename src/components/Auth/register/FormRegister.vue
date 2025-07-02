@@ -44,7 +44,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import router from '@/router'
 import AuthService from '@/class/services/AuthService'
 import { NInput, NDatePicker, useMessage } from 'naive-ui'
 import type { IUserRegister } from '@/@types/IUserRegister';
@@ -52,6 +51,8 @@ import type { IUserRegister } from '@/@types/IUserRegister';
 const toast = useMessage();
 const authService = new AuthService();
 const passwordConfirm = ref<string>("");
+
+const emit = defineEmits(['registerComplete'])
 
 const birthDateValue = ref<number | null>(null);
 
@@ -88,7 +89,7 @@ const register = async () => {
   try {
     await authService.register(userData);
     toast.success("Usuário cadastrado com sucesso!");
-    await router.push({ name: 'login' })
+    emit('registerComplete')
   } catch (error) {
     toast.error("Erro ao cadastrar usuário!");
   }
