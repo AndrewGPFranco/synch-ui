@@ -7,11 +7,7 @@
 
     <div class="tab-content">
       <label for="fullname">Nome completo</label>
-      <n-input
-        v-model:value="userRegister.fullname"
-        type="text"
-        placeholder="Digite seu nome completo"
-      />
+      <n-input v-model:value="userRegister.fullname" type="text" placeholder="Digite seu nome completo" />
     </div>
 
     <div class="tab-content">
@@ -26,22 +22,20 @@
 
     <div class="tab-content">
       <label for="password">Senha</label>
-      <n-input
-        v-model:value="userRegister.password"
-        type="password"
-        show-password-on="mousedown"
-        placeholder="Digite sua senha"
-      />
+      <n-input v-model:value="userRegister.password" type="password" show-password-on="mousedown"
+        placeholder="Digite sua senha" />
+    </div>
+
+    <div class="tab-content">
+      <label for="password">Confirmar senha</label>
+      <n-input v-model:value="passwordConfirm" type="password" show-password-on="mousedown"
+        placeholder="Digite sua senha novamente" />
     </div>
 
     <div class="tab-content">
       <label for="birthDate">Data de Nascimento</label>
-      <n-date-picker
-        v-model:value="userRegister.birthDate"
-        type="date"
-        placeholder="Selecione sua data de nascimento"
-        :default-value="null"
-      />
+      <n-date-picker v-model:value="birthDateValue" type="date" placeholder="Selecione sua data de nascimento"
+        :default-value="null" />
     </div>
 
     <button class="btn-register" @click="register">Cadastrar-se</button>
@@ -50,16 +44,16 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { NInput, NDatePicker } from 'naive-ui'
+import router from '@/router'
+import AuthService from '@/class/services/AuthService'
+import { NInput, NDatePicker, useMessage } from 'naive-ui'
+import type { IUserRegister } from '@/@types/IUserRegister';
 
-interface IUserRegister {
-  name: string
-  email: string
-  fullname: string
-  nickname: string
-  password: string
-  birthDate: number | null
-}
+const toast = useMessage();
+const authService = new AuthService();
+const passwordConfirm = ref<string>("");
+
+const birthDateValue = ref<number | null>(null);
 
 const userRegister = ref<IUserRegister>({
   name: '',
@@ -70,13 +64,34 @@ const userRegister = ref<IUserRegister>({
   birthDate: null,
 })
 
+const formatDateToLocalDateTime = (timestamp: number | null): Date | null => {
+  if (!timestamp) return null;
+
+  const date = new Date(timestamp);
+
+  const localDate = new Date(date.getTime());
+
+  return localDate;
+}
+
 const register = async () => {
-  const userData = {
-    ...userRegister.value,
-    birthDate: userRegister.value.birthDate ? new Date(userRegister.value.birthDate) : null,
+  if (userRegister.value.password !== passwordConfirm.value) {
+    toast.info("As senhas não conferem!");
+    return;
   }
 
-  console.log('register', userData)
+  const userData: IUserRegister = {
+    ...userRegister.value,
+    birthDate: formatDateToLocalDateTime(birthDateValue.value),
+  }
+
+  try {
+    await authService.register(userData);
+    toast.success("Usuário cadastrado com sucesso!");
+    await router.push({ name: 'login' })
+  } catch (error) {
+    toast.error("Erro ao cadastrar usuário!");
+  }
 }
 </script>
 
@@ -124,5 +139,27 @@ const register = async () => {
       box-shadow: 0 2px 10px rgba(255, 65, 65, 0.3);
     }
   }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.btn-login {
+  animation: fadeInUp 0.5s ease forwards;
+  animation-delay: 0.2s;
+}
+
+.auth-external {
+  animation: fadeInUp 0.5s ease forwards;
+  animation-delay: 0.3s;
 }
 </style>

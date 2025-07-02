@@ -1,5 +1,6 @@
 import { useAuthStore } from '@/stores/auth-store.ts'
 import type { IAuthInputRequest } from '@/@types/IAuthInputRequest.ts'
+import type { IUserRegister } from '@/@types/IUserRegister'
 
 class AuthService {
   private readonly authStore: ReturnType<typeof useAuthStore>
@@ -23,6 +24,10 @@ class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
+  }
+
+  async register(data: IUserRegister): Promise<void> {
+    await this.authStore.register(data)
   }
 }
 

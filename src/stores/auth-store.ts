@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { jwtDecode } from 'jwt-decode'
 import { api } from '@/network/axiosInstance.ts'
+import type { IUserRegister } from '@/@types/IUserRegister'
 import type { ITokenDecode } from '@/@types/ITokenDecode.ts'
 import type { IAuthInputRequest } from '@/@types/IAuthInputRequest.ts'
 import AuthenticatedUserDto from '@/class/dtos/AuthenticatedUserDto.ts'
@@ -42,5 +43,9 @@ export const useAuthStore = defineStore('auth', {
     isUserAutenticado(): boolean {
       return this.user != null
     },
+    async register(data: IUserRegister): Promise<void> {
+      console.log(data)
+      await api.post('/api/v1/user/register', data)
+    }
   },
 })
