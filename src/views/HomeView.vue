@@ -8,13 +8,13 @@
 </template>
 
 <script setup lang="ts">
-import AuthService from '@/class/services/AuthService.ts'
 import router from '@/router'
+import AuthService from '@/class/services/AuthService.ts'
 
 const authService = new AuthService()
 
-const logout = () => {
+const logout = async () => {
   authService.logout()
-  router.push({ name: 'login' })
+  await router.push({ name: 'login' })
 }
 </script>

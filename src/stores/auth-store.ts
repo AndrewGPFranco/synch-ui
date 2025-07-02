@@ -45,6 +45,10 @@ export const useAuthStore = defineStore('auth', {
     },
     async register(data: IUserRegister): Promise<void> {
       await api.post('/api/v1/user/register', data)
-    }
+    },
+    logout(): void {
+      localStorage.removeItem('token');
+      this.user = null;
+    },
   },
 })

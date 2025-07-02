@@ -23,7 +23,7 @@ class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
+    this.authStore.logout();
   }
 
   async register(data: IUserRegister): Promise<void> {
