@@ -7,7 +7,11 @@
 
     <div class="tab-content">
       <label for="fullname">Nome completo</label>
-      <n-input v-model:value="userRegister.fullname" type="text" placeholder="Digite seu nome completo" />
+      <n-input
+        v-model:value="userRegister.fullname"
+        type="text"
+        placeholder="Digite seu nome completo"
+      />
     </div>
 
     <div class="tab-content">
@@ -22,20 +26,32 @@
 
     <div class="tab-content">
       <label for="password">Senha</label>
-      <n-input v-model:value="userRegister.password" type="password" show-password-on="mousedown"
-        placeholder="Digite sua senha" />
+      <n-input
+        v-model:value="userRegister.password"
+        type="password"
+        show-password-on="mousedown"
+        placeholder="Digite sua senha"
+      />
     </div>
 
     <div class="tab-content">
       <label for="password">Confirmar senha</label>
-      <n-input v-model:value="passwordConfirm" type="password" show-password-on="mousedown"
-        placeholder="Digite sua senha novamente" />
+      <n-input
+        v-model:value="passwordConfirm"
+        type="password"
+        show-password-on="mousedown"
+        placeholder="Digite sua senha novamente"
+      />
     </div>
 
     <div class="tab-content">
       <label for="birthDate">Data de Nascimento</label>
-      <n-date-picker v-model:value="birthDateValue" type="date" placeholder="Selecione sua data de nascimento"
-        :default-value="null" />
+      <n-date-picker
+        v-model:value="birthDateValue"
+        type="date"
+        placeholder="Selecione sua data de nascimento"
+        :default-value="null"
+      />
     </div>
 
     <button class="btn-register" @click="register">Cadastrar-se</button>
@@ -46,15 +62,15 @@
 import { ref } from 'vue'
 import AuthService from '@/class/services/AuthService'
 import { NInput, NDatePicker, useMessage } from 'naive-ui'
-import type { IUserRegister } from '@/@types/IUserRegister';
+import type { IUserRegister } from '@/@types/IUserRegister'
 
-const toast = useMessage();
-const authService = new AuthService();
-const passwordConfirm = ref<string>("");
+const toast = useMessage()
+const authService = new AuthService()
+const passwordConfirm = ref<string>('')
 
 const emit = defineEmits(['registerComplete'])
 
-const birthDateValue = ref<number | null>(null);
+const birthDateValue = ref<number | null>(null)
 
 const userRegister = ref<IUserRegister>({
   name: '',
@@ -66,19 +82,19 @@ const userRegister = ref<IUserRegister>({
 })
 
 const formatDateToLocalDateTime = (timestamp: number | null): Date | null => {
-  if (!timestamp) return null;
+  if (!timestamp) return null
 
-  const date = new Date(timestamp);
+  const date = new Date(timestamp)
 
-  const localDate = new Date(date.getTime());
+  const localDate = new Date(date.getTime())
 
-  return localDate;
+  return localDate
 }
 
 const register = async () => {
   if (userRegister.value.password !== passwordConfirm.value) {
-    toast.info("As senhas não conferem!");
-    return;
+    toast.info('As senhas não conferem!')
+    return
   }
 
   const userData: IUserRegister = {
@@ -87,11 +103,11 @@ const register = async () => {
   }
 
   try {
-    await authService.register(userData);
-    toast.success("Usuário cadastrado com sucesso!");
+    await authService.register(userData)
+    toast.success('Usuário cadastrado com sucesso!')
     emit('registerComplete')
   } catch (error) {
-    toast.error("Erro ao cadastrar usuário!");
+    toast.error('Erro ao cadastrar usuário!')
   }
 }
 </script>

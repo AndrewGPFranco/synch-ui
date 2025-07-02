@@ -1,8 +1,14 @@
 <template>
   <section class="container">
     <h1 class="title"><span class="super">S</span>ynch</h1>
-    <n-tabs v-model:value="activeTab" class="card-tabs" size="large" animated pane-wrapper-style="margin: 0 -4px"
-      pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;">
+    <n-tabs
+      v-model:value="activeTab"
+      class="card-tabs"
+      size="large"
+      animated
+      pane-wrapper-style="margin: 0 -4px"
+      pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;"
+    >
       <n-tab-pane name="signin">
         <template #tab>
           <span style="color: #c056c0; font-size: 1.2em; font-weight: 600">Entrar</span>

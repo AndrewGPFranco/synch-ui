@@ -23,7 +23,7 @@ class AuthService {
   }
 
   logout(): void {
-    this.authStore.logout();
+    this.authStore.logout()
   }
 
   async register(data: IUserRegister): Promise<void> {

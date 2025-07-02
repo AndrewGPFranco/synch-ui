@@ -47,8 +47,8 @@ export const useAuthStore = defineStore('auth', {
       await api.post('/api/v1/user/register', data)
     },
     logout(): void {
-      localStorage.removeItem('token');
-      this.user = null;
+      localStorage.removeItem('token')
+      this.user = null
     },
   },
 })
