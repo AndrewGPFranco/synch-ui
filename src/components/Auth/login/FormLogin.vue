@@ -51,9 +51,12 @@ const login = async (e: MouseEvent) => {
 
   if (!authService.inputAuthIsValid(data)) toast.error('Digite um email e senha válido!')
 
-  await authService.login(data)
-
-  await router.push({ name: 'home' })
+  try {
+    await authService.login(data)
+    await router.push({ name: 'home' })
+  } catch (error) {
+    toast.error(String(error));
+  }
 }
 </script>
 
