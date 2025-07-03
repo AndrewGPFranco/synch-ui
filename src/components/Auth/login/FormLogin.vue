@@ -20,17 +20,6 @@
       />
     </div>
     <button class="btn-login" @click="login">Entrar</button>
-    <div class="line-separator"></div>
-    <div class="auth-external">
-      <button class="btn-google">
-        <i class="pi pi-google"></i>
-        Continuar com Google
-      </button>
-      <button class="btn-github">
-        <i class="pi pi-github"></i>
-        Continuar com Github
-      </button>
-    </div>
   </section>
 </template>
 
@@ -119,95 +108,6 @@ const login = async (e: MouseEvent | KeyboardEvent) => {
       box-shadow: 0 2px 10px rgba(255, 65, 65, 0.3);
     }
   }
-
-  .line-separator {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.2) 50%,
-      transparent 100%
-    );
-    margin: 25px 0;
-    position: relative;
-
-    &::after {
-      content: 'ou';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: $background-login;
-      padding: 0 15px;
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-  }
-
-  .auth-external {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-
-    button {
-      padding: 12px 16px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(255, 255, 255, 0.05);
-      width: 100%;
-      border-radius: 12px;
-      color: white;
-      font-size: 0.95rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-
-      &:hover {
-        transform: translateY(-1px);
-        border-color: rgba(255, 255, 255, 0.2);
-        background: rgba(255, 255, 255, 0.08);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      }
-
-      &:active {
-        transform: translateY(0);
-      }
-    }
-
-    .btn-github {
-      &:hover {
-        border-color: #333;
-        background: rgba(51, 51, 51, 0.2);
-      }
-    }
-
-    .btn-google {
-      &:hover {
-        border-color: #4285f4;
-        background: rgba(66, 133, 244, 0.1);
-      }
-    }
-
-    .btn-github,
-    .btn-google {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-
-      svg {
-        transition: transform 0.3s ease;
-      }
-
-      &:hover svg {
-        transform: scale(1.1);
-      }
-    }
-  }
 }
 
 @keyframes fadeInUp {
@@ -233,10 +133,5 @@ const login = async (e: MouseEvent | KeyboardEvent) => {
 .btn-login {
   animation: fadeInUp 0.5s ease forwards;
   animation-delay: 0.2s;
-}
-
-.auth-external {
-  animation: fadeInUp 0.5s ease forwards;
-  animation-delay: 0.3s;
 }
 </style>
