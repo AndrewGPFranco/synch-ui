@@ -16,9 +16,7 @@
     </section>
 </template>
 
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <style scoped lang="scss">
 @use '@/assets/base' as *;
@@ -46,11 +44,11 @@
         .btn-print {
             background-color: transparent;
             border: 1px solid rgb(218, 218, 218);
-            color: $color-button-blue;
+            color: $principal-color-blue;
         }
 
         .btn-create {
-            background-color: $color-button-blue;
+            background-color: $principal-color-blue;
             color: white;
 
             i {
