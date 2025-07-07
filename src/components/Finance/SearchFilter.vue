@@ -1,6 +1,9 @@
 <template>
     <section class="container">
-        <input type="search" placeholder="Pesquisar" class="inputSearch">
+        <div class="container-search">
+            <i class="pi pi-search"></i>
+            <input type="search" placeholder="Pesquisar" class="inputSearch">
+        </div>
 
         <n-date-picker type="date" placeholder="Data" class="selectDate" />
 
@@ -38,9 +41,25 @@ const optionsFilter = ref([
     padding: 1.3em;
     justify-content: space-between;
 
-    .inputSearch {
-        padding: 0.5em;
+    .container-search {
+        position: relative;
         width: 60vw;
+
+        i {
+            position: absolute;
+            left: 0.8em;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            pointer-events: none;
+        }
+
+        .inputSearch {
+            padding: 0.5em 0.5em 0.5em 2.5em;
+            width: 100%;
+            border-radius: 0.5em;
+            border: 1px solid #ccc;
+        }
     }
 
     .selectStatus,
