@@ -1,7 +1,7 @@
-import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import AuthView from '@/views/AuthView.vue'
 import { useAuthStore } from '@/stores/auth-store.ts'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,6 +16,11 @@ const router = createRouter({
       name: 'login',
       component: AuthView,
     },
+    {
+      path: '/tables',
+      name: 'tables',
+      component: () => import('../views/TableView.vue'),
+    }
   ],
 })
 

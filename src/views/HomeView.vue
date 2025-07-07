@@ -2,7 +2,7 @@
   <main>
     <h1>Home aqui</h1>
     <p>Conteúdo aqui</p>
-    <router-link :to="{ name: 'login' }">Login</router-link>
+    <router-link :to="{ name: 'tables' }">Tabelas</router-link>
     <button @click="logout">Logout</button>
   </main>
 </template>
@@ -18,3 +18,13 @@ const logout = async () => {
   await router.push({ name: 'login' })
 }
 </script>
+
+<style scoped lang="scss">
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+</style>
