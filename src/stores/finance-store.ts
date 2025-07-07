@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
-import { api } from "@/network/axiosInstance";
-import type AuthenticatedUserDto from "@/class/dtos/AuthenticatedUserDto";
 import { useAuthStore } from "./auth-store";
+import { api } from "@/network/axiosInstance";
+import type { FinanceTableDTO } from "@/@types/FinanceTableDTO";
+import type AuthenticatedUserDto from "@/class/dtos/AuthenticatedUserDto";
 
 export const useFinanceStore = defineStore('finance', {
     state: () => ({
@@ -12,14 +13,15 @@ export const useFinanceStore = defineStore('finance', {
             const authStore = useAuthStore();
             return authStore.loggedUser;
         },
-        async getTablesByUser() {
+        async getTablesByUser(): Promise<Array<FinanceTableDTO>> {
             const { token } = await this.getLoggedUser();
             const response = await api.get("/api/v1/finance/tables", {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             })
-            console.log(response);
+
+            return response.data.response;
         }
     },
 })

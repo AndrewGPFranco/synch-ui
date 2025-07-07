@@ -1,17 +1,19 @@
 <template>
     <section class="main">
-        <h1>Tabelas</h1>
+        <p v-for="table in tables" :key="table.idTable">{{ table.tableName }}</p>
     </section>
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
 import { useFinanceStore } from '@/stores/finance-store';
-import { onMounted } from 'vue';
+import type { FinanceTableDTO } from '@/@types/FinanceTableDTO';
 
+const tables = ref<Array<FinanceTableDTO>>([])
 const financeStore = useFinanceStore();
 
 onMounted(async () => {
-    await financeStore.getTablesByUser()
+    tables.value = await financeStore.getTablesByUser()
 })
 </script>
 
@@ -19,5 +21,6 @@ onMounted(async () => {
 .main {
     display: flex;
     padding: 0 1.3em;
+    flex-direction: column;
 }
 </style>
