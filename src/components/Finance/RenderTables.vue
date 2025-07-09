@@ -8,6 +8,7 @@
             <th id="createdAt">Criado em</th>
             <th id="updateAt">Última alteração</th>
             <th id="status">Status</th>
+            <th id="actions"></th>
           </tr>
         </thead>
         <tbody>
@@ -18,6 +19,17 @@
             <td>
               <span class="status-badge status-concluido">{{ table.status }}</span>
             </td>
+            <td>
+              <n-space>
+                <n-dropdown
+                  trigger="click"
+                  :options="options"
+                  @select="actionToData(table.idTable)"
+                >
+                  <n-button><i style="cursor: pointer" class="pi pi-ellipsis-v"></i></n-button>
+                </n-dropdown>
+              </n-space>
+            </td>
           </tr>
         </tbody>
       </n-table>
@@ -27,14 +39,22 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
+import { NDropdown, useMessage } from 'naive-ui'
 import DataUtils from '@/class/services/DataUtils'
 import type { IFinanceTable } from '@/@types/IFinanceTable'
-import FinanceService from '@/class/services/FinanceService.ts'
 import { useFinanceStore } from '@/stores/finance-store.ts'
+import FinanceService from '@/class/services/FinanceService.ts'
 
+const toast = useMessage()
 const financeStore = useFinanceStore()
 const financeService = new FinanceService()
 const tables = ref<Array<IFinanceTable>>([])
+const options = [{ label: 'Apagar', key: 'delete' }]
+
+const actionToData = async (idTable: number) => {
+  await financeService.deleteTable(idTable)
+  toast.success('Tabela excluída!')
+}
 
 onMounted(async () => {
   tables.value = await financeService.getTablesByUser()

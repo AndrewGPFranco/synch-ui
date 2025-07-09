@@ -3,7 +3,7 @@
     <ul class="list-options">
       <li class="option" @click="handleChangeTab('all')" :class="{ active: tabActive === 'all' }">
         Todos
-        <span class="number">{{ numberAll }}</span>
+        <span class="number">{{ tables.length }}</span>
       </li>
       <li
         class="option"
@@ -27,17 +27,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import { useFinanceStore } from '@/stores/finance-store.ts'
+import type { IFinanceTable } from '@/@types/IFinanceTable.ts'
+import FinanceService from '@/class/services/FinanceService.ts'
 
-const numberAll = ref<number>(0)
-const numberImportant = ref<number>(0)
 const numberPaused = ref<number>(0)
+const numberImportant = ref<number>(0)
+
+const tables = ref<IFinanceTable[]>([]);
+
+const financeStore = useFinanceStore();
+const financeService = new FinanceService();
 
 const tabActive = ref<string>('all')
 
 const handleChangeTab = (nameTab: string) => {
   tabActive.value = nameTab
 }
+
+onMounted(async () => {
+  tables.value = await financeService.getTablesByUser()
+})
+
+watch(
+  () => financeStore.tablesByUser,
+  (updatedTable: Array<IFinanceTable>) => {
+    tables.value = updatedTable
+  },
+)
 </script>
 
 <style scoped lang="scss">

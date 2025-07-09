@@ -19,6 +19,14 @@ class FinanceService {
       console.error(error)
     }
   }
+
+  async deleteTable(idTable: number): Promise<void> {
+    try {
+      await this.financeStore.deleteTable(idTable)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 }
 
 export default FinanceService
