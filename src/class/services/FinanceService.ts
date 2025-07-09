@@ -32,6 +32,18 @@ class FinanceService {
       )
     }
   }
+
+  async editTableName(idTable: number, newName: string): Promise<ResponseAPI<string, string>> {
+    try {
+      await this.financeStore.editTableName(idTable, newName)
+      return new ResponseAPI<string, string>(null, 'Tabela renomeada com sucesso!')
+    } catch (_) {
+      return new ResponseAPI<string, string>(
+        'Ocorreu um erro ao renomear a tabela, tente novamente.',
+        null,
+      )
+    }
+  }
 }
 
 export default FinanceService

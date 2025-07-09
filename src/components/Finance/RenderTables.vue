@@ -13,7 +13,30 @@
         </thead>
         <tbody>
           <tr v-for="table in tables" :key="table.idTable">
-            <td>{{ table.tableName }}</td>
+            <td v-if="editingTableId !== table.idTable">
+              {{ table.tableName }}
+            </td>
+            <td v-else class="td-edit">
+              <div class="edit-container">
+                <n-input
+                  v-model:value="tableNameEdit"
+                  type="text"
+                  placeholder="Digite um novo nome para a tabela"
+                  @keydown.enter="saveEdit(table.idTable)"
+                  @keydown.escape="cancelEdit()"
+                  size="small"
+                />
+                <div class="edit-actions">
+                  <n-button size="small" type="primary" @click="saveEdit(table.idTable)">
+                    <i class="pi pi-check"></i>
+                  </n-button>
+                  <n-button size="small" @click="cancelEdit()">
+                    <i class="pi pi-times"></i>
+                  </n-button>
+                </div>
+              </div>
+            </td>
+
             <td>{{ DataUtils.formatDate(table.createdAt) }}</td>
             <td>{{ DataUtils.formatDate(table.updatedAt) }}</td>
             <td>
@@ -24,7 +47,7 @@
                 <n-dropdown
                   trigger="click"
                   :options="options"
-                  @select="actionToData(table.idTable)"
+                  @select="(action) => actionToData(table.idTable, action)"
                 >
                   <n-button><i style="cursor: pointer" class="pi pi-ellipsis-v"></i></n-button>
                 </n-dropdown>
@@ -37,8 +60,34 @@
       <div class="mobile-cards">
         <div v-for="table in tables" :key="table.idTable" class="mobile-card">
           <div class="card-header">
-            <h3 class="document-name">{{ table.tableName }}</h3>
-            <n-dropdown trigger="click" :options="options" @select="actionToData(table.idTable)">
+            <div class="document-name-container">
+              <h3 v-if="editingTableId !== table.idTable" class="document-name">
+                {{ table.tableName }}
+              </h3>
+              <div v-else class="mobile-edit-container">
+                <n-input
+                  v-model:value="tableNameEdit"
+                  type="text"
+                  placeholder="Digite um novo nome"
+                  @keydown.enter="saveEdit(table.idTable)"
+                  @keydown.escape="cancelEdit()"
+                  size="small"
+                />
+                <div class="mobile-edit-actions">
+                  <n-button size="small" type="primary" @click="saveEdit(table.idTable)">
+                    <i class="pi pi-check"></i>
+                  </n-button>
+                  <n-button size="small" @click="cancelEdit()">
+                    <i class="pi pi-times"></i>
+                  </n-button>
+                </div>
+              </div>
+            </div>
+            <n-dropdown
+              trigger="click"
+              :options="options"
+              @select="(action) => actionToData(table.idTable, action)"
+            >
               <n-button size="small" class="card-menu-btn">
                 <i class="pi pi-ellipsis-v"></i>
               </n-button>
@@ -68,28 +117,67 @@
 </template>
 
 <script setup lang="ts">
-import { inject, type Ref, watch } from 'vue'
-import { NDropdown, useMessage } from 'naive-ui'
+import { inject, ref, type Ref, watch } from 'vue'
 import DataUtils from '@/class/services/DataUtils'
 import type { IFinanceTable } from '@/@types/IFinanceTable'
 import { useFinanceStore } from '@/stores/finance-store.ts'
 import FinanceService from '@/class/services/FinanceService.ts'
+import { NDropdown, NInput, NButton, NSpace, useMessage } from 'naive-ui'
 
 const toast = useMessage()
 const financeStore = useFinanceStore()
 const financeService = new FinanceService()
-const options = [{ label: 'Apagar', key: 'delete' }]
+const tableNameEdit = ref<string>('')
+const editingTableId = ref<number | null>(null)
 const tables = inject('userTables') as Ref<IFinanceTable[]>
+const options = [
+  { label: 'Editar', key: 'edit' },
+  { label: 'Apagar', key: 'delete' },
+]
 
-const actionToData = async (idTable: number) => {
-  const response = await financeService.deleteTable(idTable)
+const actionToData = async (idTable: number, action: string) => {
+  if (action === 'delete') {
+    const response = await financeService.deleteTable(idTable)
+
+    if (response.getError() === null) {
+      toast.success(String(response.getResponse()))
+      return
+    }
+
+    toast.error(String(response.getError()))
+  } else if (action === 'edit') {
+    startEdit(idTable)
+  }
+}
+
+const startEdit = (idTable: number) => {
+  const table = tables.value.find((t) => t.idTable === idTable)
+  if (table) {
+    editingTableId.value = idTable
+    tableNameEdit.value = table.tableName
+  }
+}
+
+const saveEdit = async (idTable: number) => {
+  if (!tableNameEdit.value.trim()) {
+    toast.warning('O nome da tabela não pode estar vazio')
+    return
+  }
+
+  const response = await financeService.editTableName(idTable, tableNameEdit.value)
 
   if (response.getError() === null) {
     toast.success(String(response.getResponse()))
+    cancelEdit()
     return
   }
 
   toast.error(String(response.getError()))
+}
+
+const cancelEdit = () => {
+  editingTableId.value = null
+  tableNameEdit.value = ''
 }
 
 watch(
@@ -207,9 +295,26 @@ watch(
           font-weight: 500;
           color: #1f2937;
         }
+
+        &.td-edit {
+          padding: 12px 16px;
+        }
       }
     }
   }
+}
+
+.edit-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
 .mobile-card {
@@ -239,14 +344,28 @@ watch(
   gap: 12px;
 }
 
+.document-name-container {
+  flex: 1;
+  min-width: 0;
+}
+
 .document-name {
   font-size: 1.1rem;
   font-weight: 600;
   color: #1f2937;
   margin: 0;
   line-height: 1.4;
-  flex: 1;
   word-wrap: break-word;
+}
+
+.mobile-edit-container {
+  width: 100%;
+}
+
+.mobile-edit-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
 }
 
 .card-menu-btn {
@@ -342,6 +461,10 @@ watch(
         width: 70px;
         padding: 14px 8px;
       }
+
+      &.td-edit {
+        padding: 10px 12px;
+      }
     }
 
     .status-badge {
@@ -401,6 +524,10 @@ watch(
     align-items: flex-start;
     gap: 4px;
   }
+
+  .mobile-edit-actions {
+    justify-content: flex-start;
+  }
 }
 
 @media (max-width: 360px) {
@@ -419,6 +546,10 @@ watch(
 
   .document-name {
     font-size: 0.95rem;
+  }
+
+  .edit-actions {
+    gap: 2px;
   }
 }
 </style>

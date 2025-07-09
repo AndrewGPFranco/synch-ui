@@ -47,7 +47,23 @@ export const useFinanceStore = defineStore('finance', {
         },
       })
 
-      await this.getTablesByUser();
+      await this.getTablesByUser()
+    },
+    async editTableName(idTable: number, newName: string): Promise<void> {
+      const { token } = await this.getLoggedUser()
+
+      const data: { idTable: number; newName: string } = {
+        idTable,
+        newName,
+      }
+
+      await api.put(`/api/v1/finance/edit`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      await this.getTablesByUser()
     },
   },
 })
