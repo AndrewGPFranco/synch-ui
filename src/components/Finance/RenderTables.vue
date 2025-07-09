@@ -13,8 +13,8 @@
                 <tbody>
                     <tr v-for="table in tables" :key="table.idTable">
                         <td>{{ table.tableName }}</td>
-                        <td>{{ table.createdAt }}</td>
-                        <td>{{ table.updatedAt }}</td>
+                        <td>{{ DataUtils.formatDate(table.createdAt) }}</td>
+                        <td>{{ DataUtils.formatDate(table.updatedAt) }}</td>
                         <td>
                             <span class="status-badge status-concluido">{{ table.status }}</span>
                         </td>
@@ -27,6 +27,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import DataUtils from '@/class/services/DataUtils';
 import { useFinanceStore } from '@/stores/finance-store';
 import type { IFinanceTable } from '@/@types/IFinanceTable';
 

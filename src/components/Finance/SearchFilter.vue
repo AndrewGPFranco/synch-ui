@@ -23,9 +23,9 @@ const selectedFilter = ref<string | null>(null)
 const selectedStatus = ref<string | null>(null)
 
 const optionsStatus = ref([
-    { label: "Todos", value: "Todos" },
-    { label: "Pausados", value: "Pausados" },
-    { label: "Importantes", value: "Importantes" }
+    { label: "A definir", value: "TODO" },
+    { label: "Concluídos", value: "COMPLETED" },
+    { label: "Em andamento", value: "ONGOING" }
 ])
 
 const optionsFilter = ref([
