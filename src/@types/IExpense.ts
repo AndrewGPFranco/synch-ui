@@ -1,4 +1,4 @@
-export interface ExpenseDTO {
+export interface IExpense {
     name: string,
     month: string,
     amount: number
