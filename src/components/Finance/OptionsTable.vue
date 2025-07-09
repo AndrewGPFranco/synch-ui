@@ -27,28 +27,19 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { inject, type Ref, ref, watch } from 'vue'
 import { useFinanceStore } from '@/stores/finance-store.ts'
 import type { IFinanceTable } from '@/@types/IFinanceTable.ts'
-import FinanceService from '@/class/services/FinanceService.ts'
 
+const financeStore = useFinanceStore()
 const numberPaused = ref<number>(0)
-const numberImportant = ref<number>(0)
-
-const tables = ref<IFinanceTable[]>([]);
-
-const financeStore = useFinanceStore();
-const financeService = new FinanceService();
-
 const tabActive = ref<string>('all')
+const numberImportant = ref<number>(0)
+const tables = inject('userTables') as Ref<IFinanceTable[]>
 
 const handleChangeTab = (nameTab: string) => {
   tabActive.value = nameTab
 }
-
-onMounted(async () => {
-  tables.value = await financeService.getTablesByUser()
-})
 
 watch(
   () => financeStore.tablesByUser,

@@ -106,8 +106,6 @@ const handleCreateDocument = async () => {
 
     tableName.value = ''
     showInput.value = false
-
-    await financeService.getTablesByUser();
   } catch (error) {
     console.error('Erro ao criar documento:', error)
     toast.error('Erro ao criar documento. Tente novamente.')

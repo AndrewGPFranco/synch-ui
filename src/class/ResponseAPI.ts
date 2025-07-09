@@ -1,3 +1,9 @@
+/**
+ * Classe responsável para facilitar o tratamento de erros, baseado no Golang
+ * que retorna sempre uma tupla com error e resposta de sucesso!
+ *
+ * @author andrewgo
+ */
 class ResponseAPI<ERROR, RESPONSE> {
   constructor(
     public error: ERROR | null,

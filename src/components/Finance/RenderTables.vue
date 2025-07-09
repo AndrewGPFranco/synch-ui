@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { inject, type Ref, watch } from 'vue'
 import { NDropdown, useMessage } from 'naive-ui'
 import DataUtils from '@/class/services/DataUtils'
 import type { IFinanceTable } from '@/@types/IFinanceTable'
@@ -48,8 +48,8 @@ import FinanceService from '@/class/services/FinanceService.ts'
 const toast = useMessage()
 const financeStore = useFinanceStore()
 const financeService = new FinanceService()
-const tables = ref<Array<IFinanceTable>>([])
 const options = [{ label: 'Apagar', key: 'delete' }]
+const tables = inject('userTables') as Ref<IFinanceTable[]>
 
 const actionToData = async (idTable: number) => {
   const response = await financeService.deleteTable(idTable)
@@ -61,10 +61,6 @@ const actionToData = async (idTable: number) => {
 
   toast.error(String(response.getError()))
 }
-
-onMounted(async () => {
-  tables.value = await financeService.getTablesByUser()
-})
 
 watch(
   () => financeStore.tablesByUser,

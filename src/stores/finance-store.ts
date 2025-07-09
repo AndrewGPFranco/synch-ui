@@ -27,7 +27,7 @@ export const useFinanceStore = defineStore('finance', {
     },
     async createDocument(tableName: string): Promise<void> {
       const { token } = await this.getLoggedUser()
-      const response = await api.post(
+      await api.post(
         '/api/v1/finance',
         { tableName: tableName },
         {
@@ -36,6 +36,8 @@ export const useFinanceStore = defineStore('finance', {
           },
         },
       )
+
+      await this.getTablesByUser()
     },
     async deleteTable(idTable: number): Promise<void> {
       const { token } = await this.getLoggedUser()
