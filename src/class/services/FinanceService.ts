@@ -1,3 +1,4 @@
+import ResponseAPI from '@/class/ResponseAPI.ts'
 import { useFinanceStore } from '@/stores/finance-store'
 import type { IFinanceTable } from '@/@types/IFinanceTable.ts'
 
@@ -20,11 +21,15 @@ class FinanceService {
     }
   }
 
-  async deleteTable(idTable: number): Promise<void> {
+  async deleteTable(idTable: number): Promise<ResponseAPI<string, string>> {
     try {
       await this.financeStore.deleteTable(idTable)
-    } catch (error) {
-      console.error(error)
+      return new ResponseAPI<string, string>(null, 'Tabela deletada com sucesso!')
+    } catch (_) {
+      return new ResponseAPI<string, string>(
+        'Ocorreu um erro ao deletar tabela, tente novamente.',
+        null,
+      )
     }
   }
 }

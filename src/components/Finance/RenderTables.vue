@@ -52,8 +52,14 @@ const tables = ref<Array<IFinanceTable>>([])
 const options = [{ label: 'Apagar', key: 'delete' }]
 
 const actionToData = async (idTable: number) => {
-  await financeService.deleteTable(idTable)
-  toast.success('Tabela excluída!')
+  const response = await financeService.deleteTable(idTable)
+
+  if (response.getError() === null) {
+    toast.success(String(response.getResponse()))
+    return
+  }
+
+  toast.error(String(response.getError()))
 }
 
 onMounted(async () => {
