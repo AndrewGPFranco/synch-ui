@@ -1,7 +1,7 @@
 <template>
   <section class="main">
     <div class="table-wrapper">
-      <n-table :single-line="false" class="finance-table">
+      <n-table :single-line="false" class="finance-table desktop-table">
         <thead>
           <tr>
             <th id="document">Documento</th>
@@ -33,6 +33,36 @@
           </tr>
         </tbody>
       </n-table>
+
+      <div class="mobile-cards">
+        <div v-for="table in tables" :key="table.idTable" class="mobile-card">
+          <div class="card-header">
+            <h3 class="document-name">{{ table.tableName }}</h3>
+            <n-dropdown trigger="click" :options="options" @select="actionToData(table.idTable)">
+              <n-button size="small" class="card-menu-btn">
+                <i class="pi pi-ellipsis-v"></i>
+              </n-button>
+            </n-dropdown>
+          </div>
+
+          <div class="card-content">
+            <div class="card-row">
+              <span class="card-label">Criado em:</span>
+              <span class="card-value">{{ DataUtils.formatDate(table.createdAt) }}</span>
+            </div>
+
+            <div class="card-row">
+              <span class="card-label">Última alteração:</span>
+              <span class="card-value">{{ DataUtils.formatDate(table.updatedAt) }}</span>
+            </div>
+
+            <div class="card-row">
+              <span class="card-label">Status:</span>
+              <span class="status-badge status-concluido">{{ table.status }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -85,6 +115,14 @@ watch(
   overflow-x: auto;
 }
 
+.desktop-table {
+  display: table;
+}
+
+.mobile-cards {
+  display: none;
+}
+
 .finance-table {
   width: 100%;
   table-layout: fixed;
@@ -111,6 +149,12 @@ watch(
         letter-spacing: 0.5px;
         border-right: 1px solid #e5e7eb;
         text-align: left;
+
+        &#actions {
+          width: 80px;
+          text-align: center;
+          padding: 16px 8px;
+        }
 
         &:last-child {
           border-right: none;
@@ -149,6 +193,13 @@ watch(
         overflow-wrap: break-word;
 
         &:last-child {
+          width: 80px;
+          text-align: center;
+          padding: 16px 8px;
+          border-right: none;
+        }
+
+        &:nth-child(4) {
           border-right: none;
         }
 
@@ -159,6 +210,85 @@ watch(
       }
     }
   }
+}
+
+.mobile-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.document-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.4;
+  flex: 1;
+  word-wrap: break-word;
+}
+
+.card-menu-btn {
+  flex-shrink: 0;
+  padding: 8px;
+  min-width: auto;
+
+  i {
+    font-size: 14px;
+  }
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+
+  &:not(:last-child) {
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+}
+
+.card-label {
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.card-value {
+  font-size: 0.9rem;
+  color: #374151;
+  text-align: right;
+  word-wrap: break-word;
 }
 
 .status-badge {
@@ -190,47 +320,105 @@ watch(
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .finance-table {
-    font-size: 0.85rem;
-
-    thead th,
-    tbody td {
-      padding: 12px 8px;
-      font-size: 0.8rem;
-    }
+    font-size: 0.9rem;
 
     thead th {
-      font-size: 0.75rem;
+      padding: 14px 16px;
+      font-size: 0.8rem;
+
+      &#actions {
+        width: 70px;
+        padding: 14px 8px;
+      }
+    }
+
+    tbody td {
+      padding: 14px 16px;
+      font-size: 0.85rem;
+
+      &:last-child {
+        width: 70px;
+        padding: 14px 8px;
+      }
     }
 
     .status-badge {
       font-size: 0.7rem;
-      padding: 4px 8px;
+      padding: 5px 10px;
     }
   }
 }
 
-@media (max-width: 480px) {
-  .finance-table {
+@media (max-width: 768px) {
+  .main {
+    padding: 0.75rem;
+  }
+
+  .desktop-table {
+    display: none;
+  }
+
+  .mobile-cards {
     display: block;
-    overflow-x: auto;
-    white-space: nowrap;
+  }
 
-    thead th,
-    tbody td {
-      padding: 8px 4px;
-      font-size: 0.75rem;
-    }
+  .status-badge {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+}
 
-    thead th {
-      font-size: 0.7rem;
-    }
+@media (max-width: 480px) {
+  .main {
+    padding: 0.5rem;
+  }
 
-    .status-badge {
-      font-size: 0.65rem;
-      padding: 3px 6px;
-    }
+  .mobile-card {
+    padding: 12px;
+  }
+
+  .document-name {
+    font-size: 1rem;
+  }
+
+  .card-label {
+    font-size: 0.8rem;
+  }
+
+  .card-value {
+    font-size: 0.85rem;
+  }
+
+  .status-badge {
+    font-size: 0.65rem;
+    padding: 3px 6px;
+  }
+
+  .card-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 360px) {
+  .main {
+    padding: 0.25rem;
+  }
+
+  .mobile-card {
+    padding: 10px;
+    margin-bottom: 12px;
+  }
+
+  .card-header {
+    margin-bottom: 12px;
+  }
+
+  .document-name {
+    font-size: 0.95rem;
   }
 }
 </style>

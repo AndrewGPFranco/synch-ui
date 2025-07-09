@@ -27,10 +27,12 @@
 </template>
 
 <script setup lang="ts">
+import { useMessage } from 'naive-ui'
 import { inject, type Ref, ref, watch } from 'vue'
 import { useFinanceStore } from '@/stores/finance-store.ts'
 import type { IFinanceTable } from '@/@types/IFinanceTable.ts'
 
+const toast = useMessage()
 const financeStore = useFinanceStore()
 const numberPaused = ref<number>(0)
 const tabActive = ref<string>('all')
@@ -38,7 +40,8 @@ const numberImportant = ref<number>(0)
 const tables = inject('userTables') as Ref<IFinanceTable[]>
 
 const handleChangeTab = (nameTab: string) => {
-  tabActive.value = nameTab
+  if (nameTab !== 'all') toast.info('Funcionalidade em desenvolvimento')
+  else tabActive.value = nameTab
 }
 
 watch(
