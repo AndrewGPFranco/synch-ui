@@ -16,7 +16,7 @@ enum MonthType {
 export function getMonthType(month: string | undefined): MonthType {
   if (month === undefined) throw new Error('Mês não pode ser undefined!')
 
-  const monthEntry = Object.entries(MonthType).find(([key, value]) => value === month)
+  const monthEntry = Object.entries(MonthType).find(([, value]) => value === month)
 
   if (!monthEntry) {
     throw new Error('Mês inválido!')

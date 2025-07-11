@@ -34,12 +34,6 @@ const data = ref<Array<IFinanceTable>>()
 const financeService = new FinanceService()
 const loadingRef = ref<boolean>(false)
 
-const emit = defineEmits<{
-  view: [row: IExpense]
-  edit: [row: IExpense]
-  delete: [row: IExpense]
-}>()
-
 const tableData = computed(() => {
   if (!data.value) return []
 
@@ -103,8 +97,9 @@ const getAmountColor = (amount: number): string => {
   return 'text-green-600'
 }
 
-const handleEdit = (row: IExpense) => emit('edit', row)
-const handleDelete = (row: IExpense) => emit('delete', row)
+const handleDelete = async (row: IExpense) => {
+  await financeService.deleteExpense(row.idExpense)
+}
 
 const columns: DataTableColumns<IExpense> = [
   {
@@ -155,7 +150,6 @@ const columns: DataTableColumns<IExpense> = [
                 size: 'small',
                 type: 'warning',
                 ghost: true,
-                onClick: () => handleEdit(row),
               },
               { default: () => 'Editar' },
             ),

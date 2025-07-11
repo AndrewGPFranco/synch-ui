@@ -60,6 +60,19 @@ class FinanceService {
       )
     }
   }
+
+  async deleteExpense(idExpense: number): Promise<ResponseAPI<string, string>> {
+    try {
+      await this.financeStore.deleteExpense(idExpense)
+      return new ResponseAPI<string, string>(null, 'Tabela renomeada com sucesso!')
+    } catch (error) {
+      console.log(error)
+      return new ResponseAPI<string, string>(
+        'Ocorreu um erro ao adicionar despesa na tabela, tente novamente.',
+        null,
+      )
+    }
+  }
 }
 
 export default FinanceService
