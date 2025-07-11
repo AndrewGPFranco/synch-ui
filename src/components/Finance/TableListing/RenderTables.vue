@@ -118,8 +118,8 @@
 
 <script setup lang="ts">
 import { inject, ref, type Ref, watch } from 'vue'
-import DataUtils from '@/class/services/DataUtils'
-import type { IFinanceTable } from '@/@types/IFinanceTable'
+import DataUtils from '@/class/services/DataUtils.ts'
+import type { IFinanceTable } from '@/@types/IFinanceTable.ts'
 import { useFinanceStore } from '@/stores/finance-store.ts'
 import FinanceService from '@/class/services/FinanceService.ts'
 import { NDropdown, NInput, NButton, NSpace, useMessage } from 'naive-ui'

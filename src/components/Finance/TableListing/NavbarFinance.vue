@@ -59,7 +59,7 @@
 <script setup lang="ts">
 import { useMessage, NInput } from 'naive-ui'
 import { ref, computed, nextTick, watch } from 'vue'
-import FinanceService from '@/class/services/FinanceService'
+import FinanceService from '@/class/services/FinanceService.ts'
 
 const toast = useMessage()
 const tableName = ref<string>('')

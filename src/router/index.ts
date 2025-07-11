@@ -1,5 +1,3 @@
-import HomeView from '../views/HomeView.vue'
-import AuthView from '@/views/AuthView.vue'
 import { useAuthStore } from '@/stores/auth-store.ts'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -9,17 +7,22 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component:  () => import('@/views/HomeView.vue')
     },
     {
       path: '/login',
       name: 'login',
-      component: AuthView,
+      component: () => import('@/views/AuthView.vue')
     },
     {
       path: '/tables',
       name: 'tables',
-      component: () => import('../views/TableListingView.vue'),
+      component: () => import('@/views/TableListingView.vue'),
+    },
+    {
+      path: '/table/:id',
+      name: 'table-detail',
+      component: () => import('@/views/TableView.vue'),
     }
   ],
 })
