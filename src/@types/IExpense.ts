@@ -1,5 +1,6 @@
 export interface IExpense {
-    name: string,
-    month: string,
-    amount: number
+  idTable: number
+  name: string
+  month: string
+  amount: number
 }

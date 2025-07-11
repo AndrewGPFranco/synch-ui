@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { useAuthStore } from './auth-store'
 import { api } from '@/network/axiosInstance'
+import type { IExpense } from '@/@types/IExpense.ts'
 import type { IFinanceTable } from '@/@types/IFinanceTable'
 import type AuthenticatedUserDto from '@/class/dtos/AuthenticatedUserDto'
 
@@ -65,5 +66,14 @@ export const useFinanceStore = defineStore('finance', {
 
       await this.getTablesByUser()
     },
+    async addExpense(data: IExpense): Promise<void> {
+      const { token } = await this.getLoggedUser()
+
+      await api.post(`/api/v1/expense`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+    }
   },
 })

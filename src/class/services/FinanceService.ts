@@ -1,4 +1,5 @@
 import ResponseAPI from '@/class/ResponseAPI.ts'
+import type { IExpense } from '@/@types/IExpense.ts'
 import { useFinanceStore } from '@/stores/finance-store'
 import type { IFinanceTable } from '@/@types/IFinanceTable.ts'
 
@@ -26,7 +27,7 @@ class FinanceService {
       await this.financeStore.deleteTable(idTable)
       return new ResponseAPI<string, string>(null, 'Tabela deletada com sucesso!')
     } catch (error) {
-      console.log(error);
+      console.log(error)
       return new ResponseAPI<string, string>(
         'Ocorreu um erro ao deletar tabela, tente novamente.',
         null,
@@ -39,9 +40,22 @@ class FinanceService {
       await this.financeStore.editTableName(idTable, newName)
       return new ResponseAPI<string, string>(null, 'Tabela renomeada com sucesso!')
     } catch (error) {
-      console.log(error);
+      console.log(error)
       return new ResponseAPI<string, string>(
         'Ocorreu um erro ao renomear a tabela, tente novamente.',
+        null,
+      )
+    }
+  }
+
+  async addExpense(data: IExpense): Promise<ResponseAPI<string, string>> {
+    try {
+      await this.financeStore.addExpense(data)
+      return new ResponseAPI<string, string>(null, 'Tabela renomeada com sucesso!')
+    } catch (error) {
+      console.log(error)
+      return new ResponseAPI<string, string>(
+        'Ocorreu um erro ao adicionar despesa na tabela, tente novamente.',
         null,
       )
     }
