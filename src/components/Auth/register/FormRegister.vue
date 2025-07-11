@@ -61,7 +61,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import AuthService from '@/class/services/AuthService'
-import { NInput, NDatePicker, useMessage } from 'naive-ui'
+import { NDatePicker, NInput, useMessage } from 'naive-ui'
 import type { IUserRegister } from '@/@types/IUserRegister'
 
 const toast = useMessage()
@@ -86,9 +86,7 @@ const formatDateToLocalDateTime = (timestamp: number | null): Date | null => {
 
   const date = new Date(timestamp)
 
-  const localDate = new Date(date.getTime())
-
-  return localDate
+  return new Date(date.getTime())
 }
 
 const register = async () => {
@@ -107,6 +105,7 @@ const register = async () => {
     toast.success('Usuário cadastrado com sucesso!')
     emit('registerComplete')
   } catch (error) {
+    console.log(error)
     toast.error('Erro ao cadastrar usuário!')
   }
 }

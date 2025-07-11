@@ -19,7 +19,7 @@ const router = createRouter({
     {
       path: '/tables',
       name: 'tables',
-      component: () => import('../views/TableView.vue'),
+      component: () => import('../views/TableListingView.vue'),
     }
   ],
 })

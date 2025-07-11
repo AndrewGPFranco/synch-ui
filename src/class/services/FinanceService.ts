@@ -25,7 +25,8 @@ class FinanceService {
     try {
       await this.financeStore.deleteTable(idTable)
       return new ResponseAPI<string, string>(null, 'Tabela deletada com sucesso!')
-    } catch (_) {
+    } catch (error) {
+      console.log(error);
       return new ResponseAPI<string, string>(
         'Ocorreu um erro ao deletar tabela, tente novamente.',
         null,
@@ -37,7 +38,8 @@ class FinanceService {
     try {
       await this.financeStore.editTableName(idTable, newName)
       return new ResponseAPI<string, string>(null, 'Tabela renomeada com sucesso!')
-    } catch (_) {
+    } catch (error) {
+      console.log(error);
       return new ResponseAPI<string, string>(
         'Ocorreu um erro ao renomear a tabela, tente novamente.',
         null,
