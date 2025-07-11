@@ -74,6 +74,8 @@ export const useFinanceStore = defineStore('finance', {
           Authorization: `Bearer ${token}`,
         },
       })
-    }
+
+      await this.getTablesByUser()
+    },
   },
 })

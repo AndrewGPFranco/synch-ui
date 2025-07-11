@@ -7,6 +7,6 @@ export interface IFinanceTable {
   users: Array<IUser>
   createdAt: Date
   updatedAt: Date
-  expenses: IExpense
+  expenses: Array<IExpense>
   status: string
 }
