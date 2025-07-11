@@ -14,7 +14,9 @@
         <tbody>
           <tr v-for="table in tables" :key="table.idTable">
             <td v-if="editingTableId !== table.idTable">
-              {{ table.tableName }}
+              <router-link :to="{ name: 'table-detail', params: { id: table.idTable } }">
+                {{ table.tableName }}
+              </router-link>
             </td>
             <td v-else class="td-edit">
               <div class="edit-container">
@@ -279,6 +281,11 @@ watch(
         vertical-align: middle;
         word-wrap: break-word;
         overflow-wrap: break-word;
+
+        a {
+          text-decoration: none;
+          color: black;
+        }
 
         &:last-child {
           width: 80px;
