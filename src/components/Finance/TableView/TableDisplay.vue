@@ -22,6 +22,7 @@
 
 <script setup lang="ts">
 import type { IExpense } from '@/@types/IExpense.ts'
+import { monthToNumber } from '@/@types/MonthType.ts'
 import { computed, h, onMounted, ref, watch } from 'vue'
 import { useFinanceStore } from '@/stores/finance-store.ts'
 import type { IFinanceTable } from '@/@types/IFinanceTable.ts'
@@ -85,6 +86,16 @@ const formatMonth = (month: string): string => {
   return monthMap[month] || month
 }
 
+const sortByMonth = (row1: IExpense, row2: IExpense): number => {
+  const month1 = monthToNumber(row1.month)
+  const month2 = monthToNumber(row2.month)
+  return month1 - month2
+}
+
+const sortByAmount = (row1: IExpense, row2: IExpense): number => {
+  return row1.amount - row2.amount
+}
+
 const getAmountColor = (amount: number): string => {
   if (amount >= 1000) return 'text-red-600'
   if (amount >= 500) return 'text-orange-600'
@@ -108,7 +119,7 @@ const columns: DataTableColumns<IExpense> = [
     title: 'Mês',
     key: 'month',
     width: 150,
-    sorter: 'default',
+    sorter: sortByMonth,
     render: (row) =>
       h(
         NTag,
@@ -123,7 +134,7 @@ const columns: DataTableColumns<IExpense> = [
     title: 'Valor',
     key: 'amount',
     width: 150,
-    sorter: 'default',
+    sorter: sortByAmount,
     render: (row) =>
       h('span', { class: `font-bold ${getAmountColor(row.amount)}` }, formatCurrency(row.amount)),
   },
