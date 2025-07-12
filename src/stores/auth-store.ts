@@ -8,7 +8,7 @@ import AuthenticatedUserDto from '@/class/dtos/AuthenticatedUserDto.ts'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null as AuthenticatedUserDto | null,
+    user: new AuthenticatedUserDto('', '', ''),
   }),
   actions: {
     async login(data: IAuthInputRequest): Promise<void> {
@@ -30,7 +30,9 @@ export const useAuthStore = defineStore('auth', {
       token: string | null,
     ): Promise<void> {
       if (tokenDecode && token) {
-        this.user = new AuthenticatedUserDto(token, tokenDecode.email, tokenDecode.sub)
+        this.user.setUsername(tokenDecode.sub);
+        this.user.setEmail(tokenDecode.email);
+        this.user.setToken(token)
       } else {
         const tokenStorage: string | null = localStorage.getItem('token')
 
@@ -41,14 +43,19 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     isUserAutenticado(): boolean {
-      return this.user != null
+      return this.user.token !== ''
     },
     async register(data: IUserRegister): Promise<void> {
       await api.post('/api/v1/user/register', data)
     },
     logout(): void {
       localStorage.removeItem('token')
-      this.user = null
+      this.user.setUsername('');
+      this.user.setEmail('');
+      this.user.setToken('')
     },
+  },
+  getters: {
+    loggedUser: (state): AuthenticatedUserDto => state.user,
   },
 })

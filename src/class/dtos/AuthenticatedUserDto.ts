@@ -1,13 +1,25 @@
 class AuthenticatedUserDto {
-  private readonly _token: string
-  private readonly _email: string
-  private readonly _username: string
+  token: string
+  email: string
+  username: string
 
   constructor(token: string, email: string, username: string) {
-    this._token = token
-    this._email = email
-    this._username = username
+    this.token = token
+    this.email = email
+    this.username = username
+  }
+
+  setToken(token: string) {
+    this.token = token
+  }
+
+  setEmail(email: string) {
+    this.email = email
+  }
+
+  setUsername(username: string) {
+    this.username = username
   }
 }
 
-export default AuthenticatedUserDto
+export default AuthenticatedUserDto;
