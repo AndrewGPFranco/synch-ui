@@ -25,6 +25,27 @@
           :precision="2"
           :show-button="false"
         />
+        <n-date-picker
+          class="input-field"
+          v-model:value="dueDate"
+          type="date"
+          size="large"
+          placeholder="Data de Vencimento..."
+        />
+        <n-date-picker
+          class="input-field"
+          v-model:value="paymentDate"
+          type="date"
+          size="large"
+          placeholder="Data do Pagamento"
+        />
+        <n-select
+          class="input-field"
+          v-model:value="paymentCategory"
+          :options="optionsPaymentCategory"
+          size="large"
+          placeholder="Categoria..."
+        />
       </div>
 
       <n-button
@@ -55,17 +76,28 @@ import { useRoute } from 'vue-router'
 import type { IExpense } from '@/@types/IExpense.ts'
 import FinanceService from '@/class/services/FinanceService.ts'
 import MonthType, { getMonthType, getMonthValidYear } from '@/@types/MonthType.ts'
-import { NInput, NInputNumber, NButton, NSelect, useMessage } from 'naive-ui'
+import { NInput, NInputNumber, NButton, NSelect, useMessage, NDatePicker } from 'naive-ui'
+import PaymentCategoryType, { getPaymentCategoryType } from '@/@types/PaymentCategoryType.ts'
 
 const route = useRoute()
 const toast = useMessage()
+const dueDate = ref<number>()
+const paymentDate = ref<number>()
 const name = ref<string>('')
 const financeService = new FinanceService()
 const amount = ref<number | null>(null)
 const month = ref<MonthType | null>(null)
+const paymentCategory = ref<string | null>(null)
 
 const isBlockBtn = computed(() => {
-  return !name.value?.trim() || !month.value || !amount.value || amount.value <= 0
+  return (
+    !name.value?.trim() ||
+    !month.value ||
+    !amount.value ||
+    amount.value <= 0 ||
+    !dueDate.value ||
+    !paymentCategory.value
+  )
 })
 
 const idTable = computed(() => route.params.id)
@@ -73,6 +105,11 @@ const idTable = computed(() => route.params.id)
 const options = Object.values(getMonthValidYear()).map((month) => ({
   label: month,
   value: month,
+}))
+
+const optionsPaymentCategory = Object.values(PaymentCategoryType).map((category) => ({
+  label: category,
+  value: category,
 }))
 
 const addExpense = async () => {
@@ -86,6 +123,9 @@ const addExpense = async () => {
     name: name.value!.trim(),
     month: getMonthType(month.value!),
     amount: amount.value!,
+    paymentDate: new Date(paymentDate.value!),
+    paymentCategory: getPaymentCategoryType(paymentCategory.value!),
+    dueDate: new Date(dueDate.value!),
   }
 
   const response = await financeService.addExpense(data)
