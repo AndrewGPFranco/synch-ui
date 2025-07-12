@@ -116,28 +116,6 @@
               </n-tag>
             </div>
           </div>
-
-          <div class="card-actions">
-            <n-button size="small" type="warning" ghost round class="action-btn">
-              <template #icon>
-                <span>✏️</span>
-              </template>
-              Editar
-            </n-button>
-            <n-button
-              size="small"
-              type="error"
-              ghost
-              round
-              class="action-btn"
-              @click="handleDelete(expense)"
-            >
-              <template #icon>
-                <span>🗑️</span>
-              </template>
-              Excluir
-            </n-button>
-          </div>
         </div>
       </div>
     </div>
@@ -396,9 +374,8 @@ const columns: DataTableColumns<IExpense> = [
         : h('span', { class: 'no-category' }, '-'),
   },
   {
-    title: 'Ações',
     key: 'actions',
-    width: 150,
+    width: 90,
     fixed: 'right',
     render: (row) =>
       h(
@@ -406,24 +383,6 @@ const columns: DataTableColumns<IExpense> = [
         { size: 'small', justify: 'center' },
         {
           default: () => [
-            h(
-              NTooltip,
-              {},
-              {
-                trigger: () =>
-                  h(
-                    NButton,
-                    {
-                      size: 'small',
-                      type: 'warning',
-                      ghost: true,
-                      round: true,
-                    },
-                    { default: () => '✏️' },
-                  ),
-                default: () => 'Editar despesa',
-              },
-            ),
             h(
               NTooltip,
               {},
@@ -764,17 +723,6 @@ watch(
         }
       }
     }
-
-    .card-actions {
-      display: flex;
-      gap: 12px;
-      justify-content: flex-end;
-
-      .action-btn {
-        flex: 1;
-        max-width: 120px;
-      }
-    }
   }
 
   .loading-state {
@@ -960,15 +908,6 @@ watch(
           .amount-value {
             font-size: 18px;
           }
-        }
-      }
-
-      .card-actions {
-        gap: 8px;
-
-        .action-btn {
-          font-size: 12px;
-          padding: 8px 12px;
         }
       }
     }
