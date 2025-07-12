@@ -19,7 +19,6 @@
       </div>
     </div>
 
-    <!-- Versão Desktop -->
     <div class="table-wrapper desktop-view">
       <n-data-table
         :columns="columns"
@@ -28,7 +27,7 @@
         :row-key="(row) => row.idTable"
         striped
         size="medium"
-        :scroll-x="800"
+        :scroll-x="1200"
         class="expense-table"
         :row-class-name="getRowClassName"
       >
@@ -51,7 +50,6 @@
       </n-data-table>
     </div>
 
-    <!-- Versão Mobile - Cards -->
     <div class="mobile-view">
       <div v-if="loading" class="loading-state">
         <div class="loading-spinner"></div>
@@ -99,6 +97,24 @@
                 </n-tag>
               </div>
             </div>
+
+            <div class="dates-section">
+              <div class="date-item">
+                <div class="date-label">📅 Vencimento</div>
+                <div class="date-value">{{ formatDate(expense.dueDate) }}</div>
+              </div>
+              <div v-if="expense.paymentDate" class="date-item">
+                <div class="date-label">✅ Pagamento</div>
+                <div class="date-value">{{ formatDate(expense.paymentDate) }}</div>
+              </div>
+            </div>
+
+            <div v-if="expense.paymentCategory" class="category-section">
+              <div class="category-label">Categoria</div>
+              <n-tag :type="getCategoryColor(expense.paymentCategory)" size="small" round>
+                {{ formatCategory(expense.paymentCategory) }}
+              </n-tag>
+            </div>
           </div>
 
           <div class="card-actions">
@@ -136,6 +152,7 @@ import { useFinanceStore } from '@/stores/finance-store.ts'
 import type { IFinanceTable } from '@/@types/IFinanceTable.ts'
 import FinanceService from '@/class/services/FinanceService.ts'
 import { NDataTable, NTag, NButton, NSpace, NTooltip, type DataTableColumns } from 'naive-ui'
+import { getDescriptionPaymentType } from '@/@types/PaymentCategoryType.ts'
 
 const financeStore = useFinanceStore()
 const data = ref<Array<IFinanceTable>>()
@@ -168,6 +185,16 @@ const formatCurrency = (value: number): string => {
   }).format(value)
 }
 
+const formatDate = (date: Date | string): string => {
+  if (!date) return '-'
+  const dateObj = typeof date === 'string' ? new Date(date) : date
+  return dateObj.toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  })
+}
+
 const formatMonth = (month: string): string => {
   const monthMap: Record<string, string> = {
     '01': 'Janeiro',
@@ -192,6 +219,28 @@ const formatMonth = (month: string): string => {
   return monthMap[month] || month
 }
 
+const formatCategory = (category: string | null): string => {
+  if (category !== null) return getDescriptionPaymentType(category)
+  return '-'
+}
+
+const getCategoryColor = (
+  category: string,
+): 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error' => {
+  const colorMap: Record<string, 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error'> =
+    {
+      FOOD: 'success',
+      TRANSPORT: 'info',
+      HEALTH: 'error',
+      ENTERTAINMENT: 'warning',
+      BILLS: 'primary',
+      SHOPPING: 'default',
+      EDUCATION: 'info',
+      OTHER: 'default',
+    }
+  return colorMap[category] || 'default'
+}
+
 const sortByMonth = (row1: IExpense, row2: IExpense): number => {
   const month1 = monthToNumber(row1.month)
   const month2 = monthToNumber(row2.month)
@@ -200,6 +249,26 @@ const sortByMonth = (row1: IExpense, row2: IExpense): number => {
 
 const sortByAmount = (row1: IExpense, row2: IExpense): number => {
   return row1.amount - row2.amount
+}
+
+const sortByDueDate = (row1: IExpense, row2: IExpense): number => {
+  if (!row1.dueDate && !row2.dueDate) return 0
+  if (!row1.dueDate) return 1
+  if (!row2.dueDate) return -1
+
+  const date1 = new Date(row1.dueDate)
+  const date2 = new Date(row2.dueDate)
+  return date1.getTime() - date2.getTime()
+}
+
+const sortByPaymentDate = (row1: IExpense, row2: IExpense): number => {
+  if (!row1.paymentDate && !row2.paymentDate) return 0
+  if (!row1.paymentDate) return 1
+  if (!row2.paymentDate) return -1
+
+  const date1 = new Date(row1.paymentDate)
+  const date2 = new Date(row2.paymentDate)
+  return date1.getTime() - date2.getTime()
 }
 
 const getAmountColor = (amount: number): string => {
@@ -245,7 +314,7 @@ const columns: DataTableColumns<IExpense> = [
   {
     title: 'Período',
     key: 'month',
-    width: 150,
+    width: 120,
     sorter: sortByMonth,
     render: (row) =>
       h(
@@ -262,7 +331,7 @@ const columns: DataTableColumns<IExpense> = [
   {
     title: 'Valor',
     key: 'amount',
-    width: 180,
+    width: 150,
     sorter: sortByAmount,
     render: (row) =>
       h('div', { class: 'amount-cell' }, [
@@ -276,15 +345,60 @@ const columns: DataTableColumns<IExpense> = [
           {
             size: 'small',
             round: true,
+            type: getAmountCategory(row.amount).color,
           },
           { default: () => getAmountCategory(row.amount).label },
         ),
       ]),
   },
   {
+    title: 'Vencimento',
+    key: 'dueDate',
+    width: 150,
+    sorter: sortByDueDate,
+    render: (row) =>
+      h('div', { class: 'date-cell' }, [
+        h('span', { class: 'date-value' }, formatDate(row.dueDate)),
+      ]),
+  },
+  {
+    title: 'Pagamento',
+    key: 'paymentDate',
+    width: 150,
+    sorter: sortByPaymentDate,
+    render: (row) =>
+      h('div', { class: 'date-cell' }, [
+        h(
+          'span',
+          {
+            class: row.paymentDate ? 'date-value paid' : 'date-value unpaid',
+          },
+          row.paymentDate ? formatDate(row.paymentDate) : 'Pendente',
+        ),
+      ]),
+  },
+  {
+    title: 'Categoria',
+    key: 'paymentCategory',
+    width: 150,
+    sorter: 'default',
+    render: (row) =>
+      row.paymentCategory
+        ? h(
+            NTag,
+            {
+              type: getCategoryColor(row.paymentCategory),
+              size: 'small',
+              round: true,
+            },
+            { default: () => formatCategory(row.paymentCategory) },
+          )
+        : h('span', { class: 'no-category' }, '-'),
+  },
+  {
     title: 'Ações',
     key: 'actions',
-    width: 180,
+    width: 150,
     fixed: 'right',
     render: (row) =>
       h(
@@ -305,7 +419,7 @@ const columns: DataTableColumns<IExpense> = [
                       ghost: true,
                       round: true,
                     },
-                    { default: () => '✏️ Editar' },
+                    { default: () => '✏️' },
                   ),
                 default: () => 'Editar despesa',
               },
@@ -324,7 +438,7 @@ const columns: DataTableColumns<IExpense> = [
                       round: true,
                       onClick: () => handleDelete(row),
                     },
-                    { default: () => '🗑️ Excluir' },
+                    { default: () => '🗑️' },
                   ),
                 default: () => 'Excluir despesa',
               },
@@ -507,6 +621,28 @@ watch(
     }
   }
 
+  .date-cell {
+    .date-value {
+      font-size: 13px;
+      color: #374151;
+
+      &.paid {
+        color: #10b981;
+        font-weight: 600;
+      }
+
+      &.unpaid {
+        color: #ef4444;
+        font-style: italic;
+      }
+    }
+  }
+
+  .no-category {
+    color: #9ca3af;
+    font-style: italic;
+  }
+
   .mobile-cards {
     padding: 16px;
     display: flex;
@@ -568,6 +704,8 @@ watch(
       margin-bottom: 16px;
 
       .amount-section {
+        margin-bottom: 16px;
+
         .amount-label {
           font-size: 12px;
           color: #6b7280;
@@ -586,6 +724,43 @@ watch(
             font-weight: 700;
             font-size: 20px;
           }
+        }
+      }
+
+      .dates-section {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 16px;
+
+        .date-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px 0;
+          border-bottom: 1px solid #f3f4f6;
+
+          .date-label {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 500;
+          }
+
+          .date-value {
+            font-size: 13px;
+            color: #374151;
+            font-weight: 600;
+          }
+        }
+      }
+
+      .category-section {
+        .category-label {
+          font-size: 12px;
+          color: #6b7280;
+          margin-bottom: 8px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
       }
     }
@@ -817,48 +992,6 @@ watch(
 
         .empty-description {
           font-size: 13px;
-        }
-      }
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .expense-table-container {
-    .table-header {
-      padding: 16px 12px;
-
-      .header-info .table-title {
-        font-size: 18px;
-      }
-
-      .header-stats {
-        gap: 8px;
-
-        .stat-card {
-          padding: 10px 12px;
-
-          .stat-value {
-            font-size: 14px;
-          }
-        }
-      }
-    }
-
-    .mobile-cards {
-      padding: 8px;
-    }
-
-    .expense-card {
-      padding: 12px;
-
-      .card-actions {
-        flex-direction: column;
-        gap: 6px;
-
-        .action-btn {
-          max-width: none;
-          width: 100%;
         }
       }
     }

@@ -61,7 +61,7 @@ class FinanceService {
     }
   }
 
-  async deleteExpense(idExpense: number): Promise<ResponseAPI<string, string>> {
+  async deleteExpense(idExpense: string): Promise<ResponseAPI<string, string>> {
     try {
       await this.financeStore.deleteExpense(idExpense)
       return new ResponseAPI<string, string>(null, 'Tabela renomeada com sucesso!')

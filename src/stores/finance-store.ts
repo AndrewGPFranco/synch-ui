@@ -77,7 +77,7 @@ export const useFinanceStore = defineStore('finance', {
 
       await this.getTablesByUser()
     },
-    async deleteExpense(idExpense: number): Promise<void> {
+    async deleteExpense(idExpense: string): Promise<void> {
       const { token } = await this.getLoggedUser()
 
       await api.delete(`/api/v1/expense/${idExpense}`, {

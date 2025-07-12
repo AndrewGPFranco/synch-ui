@@ -17,4 +17,17 @@ export function getPaymentCategoryType(category: string): keyof typeof PaymentCa
   throw new Error('Categoria desconhecida!')
 }
 
+export function getDescriptionPaymentType(category: string): string {
+  switch (category) {
+    case 'FIXED':
+      return 'Valor Fixo'
+    case 'VARIABLE':
+      return 'Valor Variável'
+    case 'UNFORESEEN':
+      return 'Valor Imprevisto'
+    default:
+      throw new Error('Categoria desconhecida!')
+  }
+}
+
 export default PaymentCategoryType
