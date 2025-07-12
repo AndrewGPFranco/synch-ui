@@ -101,17 +101,17 @@
             <div class="dates-section">
               <div class="date-item">
                 <div class="date-label">📅 Vencimento</div>
-                <div class="date-value">{{ formatDate(expense.dueDate) }}</div>
+                <div class="date-value">{{ DataUtils.formatDate(expense.dueDate) }}</div>
               </div>
               <div v-if="expense.paymentDate" class="date-item">
                 <div class="date-label">✅ Pagamento</div>
-                <div class="date-value">{{ formatDate(expense.paymentDate) }}</div>
+                <div class="date-value">{{ DataUtils.formatDate(expense.paymentDate) }}</div>
               </div>
             </div>
 
             <div v-if="expense.paymentCategory" class="category-section">
               <div class="category-label">Categoria</div>
-              <n-tag :type="getCategoryColor(expense.paymentCategory)" size="small" round>
+              <n-tag size="small" round>
                 {{ formatCategory(expense.paymentCategory) }}
               </n-tag>
             </div>
@@ -125,12 +125,13 @@
 <script setup lang="ts">
 import type { IExpense } from '@/@types/IExpense.ts'
 import { monthToNumber } from '@/@types/MonthType.ts'
+import DataUtils from '@/class/services/DataUtils.ts'
 import { computed, h, onMounted, ref, watch } from 'vue'
 import { useFinanceStore } from '@/stores/finance-store.ts'
 import type { IFinanceTable } from '@/@types/IFinanceTable.ts'
 import FinanceService from '@/class/services/FinanceService.ts'
-import { NDataTable, NTag, NButton, NSpace, NTooltip, type DataTableColumns } from 'naive-ui'
 import { getDescriptionPaymentType } from '@/@types/PaymentCategoryType.ts'
+import { NDataTable, NTag, NButton, NSpace, NTooltip, type DataTableColumns } from 'naive-ui'
 
 const financeStore = useFinanceStore()
 const data = ref<Array<IFinanceTable>>()
@@ -163,16 +164,6 @@ const formatCurrency = (value: number): string => {
   }).format(value)
 }
 
-const formatDate = (date: Date | string): string => {
-  if (!date) return '-'
-  const dateObj = typeof date === 'string' ? new Date(date) : date
-  return dateObj.toLocaleDateString('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  })
-}
-
 const formatMonth = (month: string): string => {
   const monthMap: Record<string, string> = {
     '01': 'Janeiro',
@@ -200,23 +191,6 @@ const formatMonth = (month: string): string => {
 const formatCategory = (category: string | null): string => {
   if (category !== null) return getDescriptionPaymentType(category)
   return '-'
-}
-
-const getCategoryColor = (
-  category: string,
-): 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error' => {
-  const colorMap: Record<string, 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error'> =
-    {
-      FOOD: 'success',
-      TRANSPORT: 'info',
-      HEALTH: 'error',
-      ENTERTAINMENT: 'warning',
-      BILLS: 'primary',
-      SHOPPING: 'default',
-      EDUCATION: 'info',
-      OTHER: 'default',
-    }
-  return colorMap[category] || 'default'
 }
 
 const sortByMonth = (row1: IExpense, row2: IExpense): number => {
@@ -336,7 +310,7 @@ const columns: DataTableColumns<IExpense> = [
     sorter: sortByDueDate,
     render: (row) =>
       h('div', { class: 'date-cell' }, [
-        h('span', { class: 'date-value' }, formatDate(row.dueDate)),
+        h('span', { class: 'date-value' }, DataUtils.formatDate(row.dueDate)),
       ]),
   },
   {
@@ -351,7 +325,7 @@ const columns: DataTableColumns<IExpense> = [
           {
             class: row.paymentDate ? 'date-value paid' : 'date-value unpaid',
           },
-          row.paymentDate ? formatDate(row.paymentDate) : 'Pendente',
+          row.paymentDate ? DataUtils.formatDate(row.paymentDate) : 'Pendente',
         ),
       ]),
   },
@@ -365,7 +339,6 @@ const columns: DataTableColumns<IExpense> = [
         ? h(
             NTag,
             {
-              type: getCategoryColor(row.paymentCategory),
               size: 'small',
               round: true,
             },

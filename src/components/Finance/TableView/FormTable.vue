@@ -81,12 +81,12 @@ import PaymentCategoryType, { getPaymentCategoryType } from '@/@types/PaymentCat
 
 const route = useRoute()
 const toast = useMessage()
-const dueDate = ref<number>()
-const paymentDate = ref<number>()
 const name = ref<string>('')
 const financeService = new FinanceService()
 const amount = ref<number | null>(null)
+const dueDate = ref<number | null>(null)
 const month = ref<MonthType | null>(null)
+const paymentDate = ref<number | null>(null)
 const paymentCategory = ref<string | null>(null)
 
 const isBlockBtn = computed(() => {
@@ -138,8 +138,11 @@ const addExpense = async () => {
 
 const clearFields = () => {
   name.value = ''
-  amount.value = null
   month.value = null
+  amount.value = null
+  dueDate.value = null
+  paymentDate.value = null
+  paymentCategory.value = null
 }
 </script>
 
