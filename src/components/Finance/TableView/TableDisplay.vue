@@ -1,22 +1,130 @@
 <template>
   <div class="expense-table-container">
-    <n-data-table
-      :columns="columns"
-      :data="tableData"
-      :loading="loading"
-      :row-key="(row) => row.idTable"
-      striped
-      size="medium"
-      :scroll-x="800"
-      class="expense-table"
-    >
-      <template #empty>
-        <div class="empty-state">
-          <div class="empty-icon">💰</div>
-          <div class="empty-text">Nenhuma despesa encontrada</div>
+    <div class="table-header">
+      <div class="header-content">
+        <div class="header-info">
+          <h2 class="table-title">💰 Controle de Despesas</h2>
+          <p class="table-subtitle">Gerenciamento das despesas mensais</p>
         </div>
-      </template>
-    </n-data-table>
+        <div class="header-stats">
+          <div class="stat-card">
+            <div class="stat-label">Total de Despesas</div>
+            <div class="stat-value">{{ tableData.length }}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Valor Total</div>
+            <div class="stat-value">{{ formatCurrency(totalAmount) }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Versão Desktop -->
+    <div class="table-wrapper desktop-view">
+      <n-data-table
+        :columns="columns"
+        :data="tableData"
+        :loading="loading"
+        :row-key="(row) => row.idTable"
+        striped
+        size="medium"
+        :scroll-x="800"
+        class="expense-table"
+        :row-class-name="getRowClassName"
+      >
+        <template #empty>
+          <div class="empty-state">
+            <div class="empty-illustration">
+              <div class="empty-circle">
+                <div class="empty-icon">💸</div>
+              </div>
+            </div>
+            <div class="empty-content">
+              <h3 class="empty-title">Nenhuma despesa encontrada</h3>
+              <p class="empty-description">
+                Comece adicionando suas primeiras despesas para ter um controle melhor das suas
+                finanças.
+              </p>
+            </div>
+          </div>
+        </template>
+      </n-data-table>
+    </div>
+
+    <!-- Versão Mobile - Cards -->
+    <div class="mobile-view">
+      <div v-if="loading" class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Carregando despesas...</p>
+      </div>
+      <div v-else-if="tableData.length === 0" class="empty-state">
+        <div class="empty-illustration">
+          <div class="empty-circle">
+            <div class="empty-icon">💸</div>
+          </div>
+        </div>
+        <div class="empty-content">
+          <h3 class="empty-title">Nenhuma despesa encontrada</h3>
+          <p class="empty-description">
+            Comece adicionando suas primeiras despesas para ter um controle melhor das suas
+            finanças.
+          </p>
+        </div>
+      </div>
+      <div v-else class="mobile-cards">
+        <div
+          v-for="expense in tableData"
+          :key="expense.idExpense"
+          class="expense-card"
+          :class="getCardClassName(expense)"
+        >
+          <div class="card-header">
+            <div class="expense-name">{{ expense.name }}</div>
+            <div class="expense-month">
+              <n-tag type="info" size="small" round>
+                {{ formatMonth(expense.month) }}
+              </n-tag>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="amount-section">
+              <div class="amount-label">Valor</div>
+              <div class="amount-display">
+                <span class="amount-value" :class="getAmountColor(expense.amount)">
+                  {{ formatCurrency(expense.amount) }}
+                </span>
+                <n-tag :type="getAmountCategory(expense.amount).color" size="small" round>
+                  {{ getAmountCategory(expense.amount).label }}
+                </n-tag>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <n-button size="small" type="warning" ghost round class="action-btn">
+              <template #icon>
+                <span>✏️</span>
+              </template>
+              Editar
+            </n-button>
+            <n-button
+              size="small"
+              type="error"
+              ghost
+              round
+              class="action-btn"
+              @click="handleDelete(expense)"
+            >
+              <template #icon>
+                <span>🗑️</span>
+              </template>
+              Excluir
+            </n-button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -27,7 +135,7 @@ import { computed, h, onMounted, ref, watch } from 'vue'
 import { useFinanceStore } from '@/stores/finance-store.ts'
 import type { IFinanceTable } from '@/@types/IFinanceTable.ts'
 import FinanceService from '@/class/services/FinanceService.ts'
-import { NDataTable, NTag, NButton, NSpace, type DataTableColumns } from 'naive-ui'
+import { NDataTable, NTag, NButton, NSpace, NTooltip, type DataTableColumns } from 'naive-ui'
 
 const financeStore = useFinanceStore()
 const data = ref<Array<IFinanceTable>>()
@@ -45,6 +153,10 @@ const tableData = computed(() => {
   })
 
   return allExpenses
+})
+
+const totalAmount = computed(() => {
+  return tableData.value.reduce((sum, expense) => sum + expense.amount, 0)
 })
 
 const loading = computed(() => loadingRef.value ?? false)
@@ -91,27 +203,47 @@ const sortByAmount = (row1: IExpense, row2: IExpense): number => {
 }
 
 const getAmountColor = (amount: number): string => {
-  if (amount >= 1000) return 'text-red-600'
-  if (amount >= 500) return 'text-orange-600'
+  if (amount >= 1000) return 'text-red-500'
+  if (amount >= 500) return 'text-orange-500'
   if (amount >= 100) return 'text-yellow-600'
-  return 'text-green-600'
+  return 'text-green-500'
+}
+
+const getAmountCategory = (amount: number) => {
+  if (amount >= 1000) return { color: 'error' as const, label: 'Alto' }
+  if (amount >= 500) return { color: 'warning' as const, label: 'Médio' }
+  if (amount >= 100) return { color: 'info' as const, label: 'Baixo' }
+  return { color: 'success' as const, label: 'Mínimo' }
+}
+
+const getRowClassName = (row: IExpense): string => {
+  if (row.amount >= 1000) return 'high-expense-row'
+  if (row.amount >= 500) return 'medium-expense-row'
+  return 'low-expense-row'
+}
+
+const getCardClassName = (expense: IExpense): string => {
+  if (expense.amount >= 1000) return 'high-expense-card'
+  if (expense.amount >= 500) return 'medium-expense-card'
+  return 'low-expense-card'
 }
 
 const handleDelete = async (row: IExpense) => {
-  await financeService.deleteExpense(row.idExpense)
+  if (row.idExpense !== undefined) await financeService.deleteExpense(row.idExpense)
 }
 
 const columns: DataTableColumns<IExpense> = [
   {
-    title: 'Nome da Despesa',
+    title: 'Despesa',
     key: 'name',
     minWidth: 200,
     sorter: 'default',
     ellipsis: { tooltip: true },
-    render: (row) => h('span', { class: 'font-medium' }, row.name),
+    render: (row) =>
+      h('div', { class: 'expense-name-cell' }, [h('div', { class: 'expense-name' }, row.name)]),
   },
   {
-    title: 'Mês',
+    title: 'Período',
     key: 'month',
     width: 150,
     sorter: sortByMonth,
@@ -120,7 +252,9 @@ const columns: DataTableColumns<IExpense> = [
         NTag,
         {
           type: 'info',
-          size: 'small',
+          size: 'medium',
+          bordered: false,
+          round: true,
         },
         { default: () => formatMonth(row.month) },
       ),
@@ -128,10 +262,24 @@ const columns: DataTableColumns<IExpense> = [
   {
     title: 'Valor',
     key: 'amount',
-    width: 150,
+    width: 180,
     sorter: sortByAmount,
     render: (row) =>
-      h('span', { class: `font-bold ${getAmountColor(row.amount)}` }, formatCurrency(row.amount)),
+      h('div', { class: 'amount-cell' }, [
+        h(
+          'span',
+          { class: `amount-value ${getAmountColor(row.amount)}` },
+          formatCurrency(row.amount),
+        ),
+        h(
+          NTag,
+          {
+            size: 'small',
+            round: true,
+          },
+          { default: () => getAmountCategory(row.amount).label },
+        ),
+      ]),
   },
   {
     title: 'Ações',
@@ -141,27 +289,45 @@ const columns: DataTableColumns<IExpense> = [
     render: (row) =>
       h(
         NSpace,
-        { size: 'small' },
+        { size: 'small', justify: 'center' },
         {
           default: () => [
             h(
-              NButton,
+              NTooltip,
+              {},
               {
-                size: 'small',
-                type: 'warning',
-                ghost: true,
+                trigger: () =>
+                  h(
+                    NButton,
+                    {
+                      size: 'small',
+                      type: 'warning',
+                      ghost: true,
+                      round: true,
+                    },
+                    { default: () => '✏️ Editar' },
+                  ),
+                default: () => 'Editar despesa',
               },
-              { default: () => 'Editar' },
             ),
             h(
-              NButton,
+              NTooltip,
+              {},
               {
-                size: 'small',
-                type: 'error',
-                ghost: true,
-                onClick: () => handleDelete(row),
+                trigger: () =>
+                  h(
+                    NButton,
+                    {
+                      size: 'small',
+                      type: 'error',
+                      ghost: true,
+                      round: true,
+                      onClick: () => handleDelete(row),
+                    },
+                    { default: () => '🗑️ Excluir' },
+                  ),
+                default: () => 'Excluir despesa',
               },
-              { default: () => 'Excluir' },
             ),
           ],
         },
@@ -190,13 +356,82 @@ watch(
 
 <style scoped lang="scss">
 .expense-table-container {
-  background: white;
-  border-radius: 12px;
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
   box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
   overflow: hidden;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #e2e8f0;
+  padding: 10px;
+
+  .table-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 24px 32px;
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .header-info {
+      .table-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0 0 8px 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .table-subtitle {
+        font-size: 14px;
+        opacity: 0.9;
+        margin: 0;
+      }
+    }
+
+    .header-stats {
+      display: flex;
+      gap: 16px;
+
+      .stat-card {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 16px 20px;
+        min-width: 120px;
+        text-align: center;
+
+        .stat-label {
+          font-size: 12px;
+          opacity: 0.8;
+          margin-bottom: 4px;
+        }
+
+        .stat-value {
+          font-size: 18px;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+
+  .desktop-view {
+    display: block;
+  }
+
+  .mobile-view {
+    display: none;
+  }
+
+  .table-wrapper {
+    padding: 0;
+    background: white;
+  }
 
   .expense-table {
     :deep(.n-data-table-thead) {
@@ -206,22 +441,44 @@ watch(
         font-weight: 600;
         color: #374151;
         border-bottom: 2px solid #e5e7eb;
-        padding: 16px 12px;
+        padding: 20px 16px;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
     }
 
     :deep(.n-data-table-tbody) {
       .n-data-table-tr {
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
 
         &:hover {
           background-color: #f8fafc;
+          transform: translateX(2px);
+          box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        &.high-expense-row {
+          border-left-color: #ef4444;
+          background-color: #fef2f2;
+        }
+
+        &.medium-expense-row {
+          border-left-color: #f59e0b;
+          background-color: #fffbeb;
+        }
+
+        &.low-expense-row {
+          border-left-color: #10b981;
+          background-color: #f0fdf4;
         }
       }
 
       .n-data-table-td {
-        padding: 14px 12px;
+        padding: 16px;
         border-bottom: 1px solid #f3f4f6;
+        vertical-align: middle;
       }
     }
 
@@ -230,44 +487,378 @@ watch(
     }
   }
 
+  .expense-name-cell {
+    .expense-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #374151;
+      margin-bottom: 4px;
+    }
+  }
+
+  .amount-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .amount-value {
+      font-weight: 700;
+      font-size: 16px;
+    }
+  }
+
+  .mobile-cards {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: white;
+  }
+
+  .expense-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.15);
+    }
+
+    &.high-expense-card {
+      border-left-color: #ef4444;
+      background-color: #fef2f2;
+    }
+
+    &.medium-expense-card {
+      border-left-color: #f59e0b;
+      background-color: #fffbeb;
+    }
+
+    &.low-expense-card {
+      border-left-color: #10b981;
+      background-color: #f0fdf4;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      gap: 12px;
+
+      .expense-name {
+        font-weight: 600;
+        font-size: 16px;
+        color: #374151;
+        flex: 1;
+        line-height: 1.4;
+      }
+
+      .expense-month {
+        flex-shrink: 0;
+      }
+    }
+
+    .card-body {
+      margin-bottom: 16px;
+
+      .amount-section {
+        .amount-label {
+          font-size: 12px;
+          color: #6b7280;
+          margin-bottom: 8px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .amount-display {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          flex-wrap: wrap;
+
+          .amount-value {
+            font-weight: 700;
+            font-size: 20px;
+          }
+        }
+      }
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+
+      .action-btn {
+        flex: 1;
+        max-width: 120px;
+      }
+    }
+  }
+
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    background: white;
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #e5e7eb;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 16px;
+    }
+
+    p {
+      color: #6b7280;
+      font-size: 14px;
+      margin: 0;
+    }
+  }
+
   .empty-state {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 48px 20px;
-    color: #6b7280;
+    padding: 60px 20px;
+    text-align: center;
+    background: white;
 
-    .empty-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-      opacity: 0.6;
+    .empty-illustration {
+      margin-bottom: 24px;
+
+      .empty-circle {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        animation: pulse 2s ease-in-out infinite;
+
+        .empty-icon {
+          font-size: 32px;
+          filter: grayscale(100%);
+        }
+      }
     }
 
-    .empty-text {
-      font-size: 16px;
-      font-weight: 500;
+    .empty-content {
+      .empty-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #374151;
+        margin: 0 0 8px 0;
+      }
+
+      .empty-description {
+        font-size: 14px;
+        color: #6b7280;
+        margin: 0;
+        line-height: 1.5;
+        max-width: 400px;
+      }
     }
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
   }
 }
 
 @media (max-width: 768px) {
   .expense-table-container {
-    margin: 16px;
-    border-radius: 8px;
+    margin: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    padding: 0;
 
-    .expense-table {
-      :deep(.n-data-table-thead) {
-        .n-data-table-th {
-          padding: 12px 8px;
-          font-size: 14px;
+    .desktop-view {
+      display: none;
+    }
+
+    .mobile-view {
+      display: block;
+    }
+
+    .table-header {
+      padding: 20px 16px;
+      border-radius: 0;
+
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+      }
+
+      .header-info {
+        .table-title {
+          font-size: 20px;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .table-subtitle {
+          font-size: 13px;
         }
       }
 
-      :deep(.n-data-table-tbody) {
-        .n-data-table-td {
-          padding: 12px 8px;
-          font-size: 14px;
+      .header-stats {
+        justify-content: center;
+        width: 100%;
+
+        .stat-card {
+          flex: 1;
+          min-width: 0;
+          padding: 12px 16px;
+
+          .stat-label {
+            font-size: 11px;
+          }
+
+          .stat-value {
+            font-size: 16px;
+          }
+        }
+      }
+    }
+
+    .mobile-cards {
+      padding: 12px;
+      gap: 12px;
+    }
+
+    .expense-card {
+      padding: 16px;
+      border-radius: 12px;
+
+      .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 12px;
+
+        .expense-name {
+          font-size: 15px;
+        }
+      }
+
+      .card-body {
+        margin-bottom: 12px;
+
+        .amount-display {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+
+          .amount-value {
+            font-size: 18px;
+          }
+        }
+      }
+
+      .card-actions {
+        gap: 8px;
+
+        .action-btn {
+          font-size: 12px;
+          padding: 8px 12px;
+        }
+      }
+    }
+
+    .empty-state {
+      padding: 40px 16px;
+
+      .empty-illustration .empty-circle {
+        width: 60px;
+        height: 60px;
+
+        .empty-icon {
+          font-size: 24px;
+        }
+      }
+
+      .empty-content {
+        .empty-title {
+          font-size: 16px;
+        }
+
+        .empty-description {
+          font-size: 13px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .expense-table-container {
+    .table-header {
+      padding: 16px 12px;
+
+      .header-info .table-title {
+        font-size: 18px;
+      }
+
+      .header-stats {
+        gap: 8px;
+
+        .stat-card {
+          padding: 10px 12px;
+
+          .stat-value {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+
+    .mobile-cards {
+      padding: 8px;
+    }
+
+    .expense-card {
+      padding: 12px;
+
+      .card-actions {
+        flex-direction: column;
+        gap: 6px;
+
+        .action-btn {
+          max-width: none;
+          width: 100%;
         }
       }
     }

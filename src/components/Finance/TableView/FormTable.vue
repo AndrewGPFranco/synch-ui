@@ -32,16 +32,11 @@
         size="large"
         class="submit-button"
         :loading="false"
+        :disabled="isBlockBtn"
         @click="addExpense"
       >
         <template #icon>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            viewBox="0 0 16 16"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
             <path
               d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"
@@ -58,45 +53,65 @@
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import type { IExpense } from '@/@types/IExpense.ts'
-import { NInput, NInputNumber, NButton, NSelect } from 'naive-ui'
 import FinanceService from '@/class/services/FinanceService.ts'
-import MonthType, { getMonthType } from '@/@types/MonthType.ts'
+import MonthType, { getMonthType, getMonthValidYear } from '@/@types/MonthType.ts'
+import { NInput, NInputNumber, NButton, NSelect, useMessage } from 'naive-ui'
 
 const route = useRoute()
-const month = ref<MonthType>()
+const toast = useMessage()
 const name = ref<string>('')
-const amount = ref<number>(0)
-const idTable = computed(() => route.params.id)
 const financeService = new FinanceService()
+const amount = ref<number | null>(null)
+const month = ref<MonthType | null>(null)
 
-const options = Object.values(MonthType).map((month) => ({
+const isBlockBtn = computed(() => {
+  return !name.value?.trim() || !month.value || !amount.value || amount.value <= 0
+})
+
+const idTable = computed(() => route.params.id)
+
+const options = Object.values(getMonthValidYear()).map((month) => ({
   label: month,
   value: month,
 }))
 
 const addExpense = async () => {
-  const data: IExpense = {
-    idTable: Number(idTable.value),
-    name: name.value,
-    month: getMonthType(month.value),
-    amount: amount.value,
+  if (isBlockBtn.value) {
+    toast.info('Há valores não informados, preencha todos!')
+    return
   }
 
-  await financeService.addExpense(data)
+  const data: IExpense = {
+    idTable: String(idTable.value),
+    name: name.value!.trim(),
+    month: getMonthType(month.value!),
+    amount: amount.value!,
+  }
+
+  const response = await financeService.addExpense(data)
+
+  if (response.getError() == null) {
+    toast.success('Despesa adicionada!')
+    clearFields()
+  } else toast.error('Ocorreu um erro ao adicionar despesa, verifique os dados e tente novamente.')
+}
+
+const clearFields = () => {
+  name.value = ''
+  amount.value = null
+  month.value = null
 }
 </script>
 
 <style scoped lang="scss">
 .container-form {
   background-color: #ffffff;
-  border-radius: 12px;
   box-shadow:
     0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  margin-bottom: 24px;
-  padding: 0;
   overflow: hidden;
   border: 1px solid #e5e7eb;
+  padding: 10px;
 
   .form-content {
     display: flex;

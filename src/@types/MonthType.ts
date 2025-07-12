@@ -13,8 +13,12 @@ enum MonthType {
   DECEMBER = 'Dezembro',
 }
 
-export function getMonthType(month: string | undefined): MonthType {
-  if (month === undefined) throw new Error('Mês não pode ser undefined!')
+/**
+ * Responsável por retornar o mês do enum a partir de um mês selecionado pela tela.
+ * @param month
+ */
+export function getMonthType(month: string | null | undefined): MonthType {
+  if (month === null || month === undefined) throw new Error('Mês não pode ser undefined!')
 
   const monthEntry = Object.entries(MonthType).find(([, value]) => value === month)
 
@@ -25,6 +29,40 @@ export function getMonthType(month: string | undefined): MonthType {
   return monthEntry[0] as MonthType
 }
 
+/**
+ * Responsável por popular um mapa contendo nome do mês e número do mês. (ex: 1 -> Janeiro)
+ */
+function getMonthMap(): Map<number, string> {
+  const monthMap: Map<number, string> = new Map<number, string>()
+
+  Object.entries(MonthType).forEach(([, value]) => {
+    monthMap.set(Object.values(MonthType).indexOf(value) + 1, String(value))
+  })
+
+  return monthMap
+}
+
+/**
+ * Responsável por verificar o mês atual e só retornar os meses válidos a partir do atual.
+ */
+export function getMonthValidYear(): Array<string> {
+  const validMonth: Array<string> = []
+  const currentMonth = new Date().getMonth() + 1
+
+  const monthMap: Map<number, string> = getMonthMap()
+  monthMap.forEach((monthString, monthNumber) => {
+    if (monthNumber >= currentMonth) {
+      validMonth.push(monthString)
+    }
+  })
+
+  return validMonth
+}
+
+/**
+ * Responsável em a partir de um mês trazer o número do mesmo.
+ * @param month
+ */
 export function monthToNumber(month: string): number {
   switch (month) {
     case 'JANUARY':
