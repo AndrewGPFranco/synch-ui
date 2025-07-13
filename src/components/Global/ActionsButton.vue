@@ -1,44 +1,68 @@
 <template>
   <section class="actions">
-    <button class="button-notifications" :class="{ isHome: isHome }">
-      <div class="notification-icon-wrapper">
-        <i class="pi pi-bell notification-icon"></i>
-        <span class="notification-badge" v-if="hasNotification" :class="{ pulse: hasNotification }">
-          {{ amountNotification > 99 ? '99+' : amountNotification }}
-        </span>
-      </div>
-    </button>
-    <button
-      v-if="!isHome"
-      class="button-home"
-      @click="goHome"
-      :class="{ 'button-home--hidden': isHome }"
-    >
-      <svg class="home-icon" viewBox="0 0 24 24" stroke="currentColor">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-        <polyline points="9,22 9,12 15,12 15,22" />
-      </svg>
-      <span class="home-text">HOME</span>
-    </button>
+    <div>
+      <ShowNotifications
+        :notifications="notifications"
+        v-if="showNotifications"
+        @closed="handlerClosedNotification"
+      />
+    </div>
+
+    <div>
+      <button class="button-notifications" :class="{ isHome: isHome }" @click="show">
+        <div class="notification-icon-wrapper">
+          <i class="pi pi-bell notification-icon"></i>
+          <span
+            class="notification-badge"
+            v-if="hasNotification"
+            :class="{ pulse: hasNotification }"
+          >
+            {{ notifications.length > 99 ? '99+' : notifications.length }}
+          </span>
+        </div>
+      </button>
+      <button
+        v-if="!isHome"
+        class="button-home"
+        @click="goHome"
+        :class="{ 'button-home--hidden': isHome }"
+      >
+        <svg class="home-icon" viewBox="0 0 24 24" stroke="currentColor">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9,22 9,12 15,12 15,22" />
+        </svg>
+        <span class="home-text">HOME</span>
+      </button>
+    </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
-import { computed, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useNotificationStore } from '@/stores/notification-store.ts'
+import ShowNotifications from '@/components/Notification/ShowNotifications.vue'
 
 const route = useRoute()
 const router = useRouter()
 const notificationStore = useNotificationStore()
 
 let intervalId: number | undefined
+const showNotifications = ref<boolean>(false)
 const isHome = computed(() => route.name === 'home')
-const amountNotification = computed(() => notificationStore.notifications.length)
+const notifications = computed(() => notificationStore.notifications)
 const hasNotification = computed(() => notificationStore.notifications.length > 0)
 
 const getNotifications = async () => {
   await notificationStore.getNotificationsUser()
+}
+
+const show = () => {
+  showNotifications.value = !showNotifications.value
+}
+
+const handlerClosedNotification = () => {
+  showNotifications.value = false
 }
 
 onMounted(() => {
@@ -53,6 +77,13 @@ onUnmounted(() => {
 const goHome = () => {
   router.push({ name: 'home' })
 }
+
+watch(
+  () => route.path,
+  () => {
+    showNotifications.value = false
+  },
+)
 </script>
 
 <style scoped lang="scss">
