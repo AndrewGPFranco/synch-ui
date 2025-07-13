@@ -1,6 +1,6 @@
 <template>
   <section class="actions">
-    <button class="button-notifications">
+    <button class="button-notifications" :class="{ isHome: isHome }">
       <div class="notification-icon-wrapper">
         <i class="pi pi-bell notification-icon"></i>
         <span class="notification-badge" v-if="hasNotification" :class="{ pulse: hasNotification }">
@@ -37,7 +37,6 @@ const isHome = computed(() => route.name === 'home')
 const amountNotification = computed(() => notificationStore.notifications.length)
 const hasNotification = computed(() => notificationStore.notifications.length > 0)
 
-
 const getNotifications = async () => {
   await notificationStore.getNotificationsUser()
 }
@@ -62,6 +61,10 @@ const goHome = () => {
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
+
+  .isHome {
+    bottom: 2rem !important;
+  }
 
   .button-notifications {
     bottom: 5.5rem;
