@@ -24,17 +24,32 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { computed, onMounted, onUnmounted } from 'vue'
 import { useNotificationStore } from '@/stores/notification-store.ts'
 
 const route = useRoute()
 const router = useRouter()
 const notificationStore = useNotificationStore()
 
+let intervalId: number | undefined
 const isHome = computed(() => route.name === 'home')
-const amountNotification = computed(() => notificationStore.notificationsByUser.length)
-const hasNotification = computed(() => notificationStore.notificationsByUser.length > 0)
+const amountNotification = computed(() => notificationStore.notifications.length)
+const hasNotification = computed(() => notificationStore.notifications.length > 0)
+
+
+const getNotifications = async () => {
+  await notificationStore.getNotificationsUser()
+}
+
+onMounted(() => {
+  getNotifications()
+  intervalId = setInterval(getNotifications, 120000)
+})
+
+onUnmounted(() => {
+  if (intervalId) clearInterval(intervalId)
+})
 
 const goHome = () => {
   router.push({ name: 'home' })

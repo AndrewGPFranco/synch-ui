@@ -1,6 +1,6 @@
 import { useAuthStore } from '@/stores/auth-store.ts'
-import type { IAuthInputRequest } from '@/@types/IAuthInputRequest.ts'
 import type { IUserRegister } from '@/@types/IUserRegister'
+import type { IAuthInputRequest } from '@/@types/IAuthInputRequest.ts'
 
 class AuthService {
   private readonly authStore: ReturnType<typeof useAuthStore>
