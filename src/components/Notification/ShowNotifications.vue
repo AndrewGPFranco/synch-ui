@@ -22,6 +22,7 @@
           v-for="(notification, index) in props.notifications"
           :key="`${notification.messageContent}-${index}`"
           class="notification-item"
+          :class="{ wasRead: notification.wasRead }"
         >
           <div class="notification-avatar">
             <span class="avatar-text">
@@ -33,6 +34,7 @@
             <div class="notification-header">
               <span class="notification-user">{{ notification.creatorUser.name }}</span>
               <span class="notification-nickname">@{{ notification.creatorUser.nickname }}</span>
+              <span v-if="notification.wasRead" class="notification-read-label">LIDA</span>
             </div>
             <p class="notification-message">{{ notification.messageContent }}</p>
           </div>
@@ -62,7 +64,10 @@
         <i class="pi pi-check-circle"></i>
         Marcar todas como lidas
       </button>
-      <button class="footer-btn clear-all" @click="notificationService.clearAll">
+      <button
+        class="footer-btn clear-all"
+        @click="notificationService.clearAll(props.notifications[0])"
+      >
         <i class="pi pi-trash"></i>
         Limpar todas
       </button>
@@ -232,6 +237,32 @@ const getInitials = (name: string): string => {
   list-style: none;
   padding: 0;
   margin: 0;
+}
+
+.wasRead {
+  background-color: #f3f4f6;
+  opacity: 0.8;
+
+  .notification-message {
+    color: #9ca3af;
+    font-style: italic;
+  }
+
+  .notification-read-label {
+    background-color: #10b981;
+    color: white;
+  }
+}
+
+.notification-read-label {
+  margin-left: auto;
+  background-color: #d1d5db;
+  color: #374151;
+  font-size: 0.625rem;
+  font-weight: bold;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  text-transform: uppercase;
 }
 
 .notification-item {

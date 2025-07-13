@@ -32,9 +32,9 @@ class NotificationService {
     }
   }
 
-  async clearAll(): Promise<void> {
+  async clearAll(notification: INotification): Promise<void> {
     try {
-      await this.notificationStore.clearAll()
+      await this.notificationStore.clearAll(notification)
     } catch (error) {
       console.error('Erro ao remover todas notificações:', error)
     }

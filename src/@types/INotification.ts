@@ -4,4 +4,5 @@ export interface INotification {
   idNotification: string
   creatorUser: IUser
   messageContent: string
+  wasRead: boolean
 }
