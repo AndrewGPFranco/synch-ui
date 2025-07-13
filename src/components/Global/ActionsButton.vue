@@ -1,7 +1,12 @@
 <template>
   <section class="actions">
     <button class="button-notifications">
-      <i class="pi pi-bell"></i>
+      <div class="notification-icon-wrapper">
+        <i class="pi pi-bell notification-icon"></i>
+        <span class="notification-badge" v-if="hasNotification" :class="{ pulse: hasNotification }">
+          {{ amountNotification > 99 ? '99+' : amountNotification }}
+        </span>
+      </div>
     </button>
     <button
       v-if="!isHome"
@@ -19,13 +24,17 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter, useRoute } from 'vue-router'
 import { computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { useNotificationStore } from '@/stores/notification-store.ts'
 
-const router = useRouter()
 const route = useRoute()
+const router = useRouter()
+const notificationStore = useNotificationStore()
 
 const isHome = computed(() => route.name === 'home')
+const amountNotification = computed(() => notificationStore.notificationsByUser.length)
+const hasNotification = computed(() => notificationStore.notificationsByUser.length > 0)
 
 const goHome = () => {
   router.push({ name: 'home' })
@@ -41,6 +50,59 @@ const goHome = () => {
 
   .button-notifications {
     bottom: 5.5rem;
+    position: relative;
+
+    .notification-icon-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .notification-icon {
+      font-size: 1.25rem;
+      transition: transform 0.3s ease;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+
+      min-width: 20px;
+      height: 20px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      color: white;
+
+      border-radius: 50%;
+      border: 2px solid white;
+
+      font-size: 0.75rem;
+      font-weight: 700;
+      line-height: 1;
+
+      box-shadow: 0 2px 8px rgba(238, 90, 36, 0.4);
+
+      &.pulse {
+        animation: pulse 2s infinite;
+      }
+    }
+
+    &:hover {
+      .notification-icon {
+        transform: rotate(15deg) scale(1.1);
+      }
+
+      .notification-badge {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(238, 90, 36, 0.6);
+      }
+    }
   }
 
   .button-home {
@@ -102,6 +164,21 @@ const goHome = () => {
       outline: none;
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
     }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 </style>
