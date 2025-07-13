@@ -76,15 +76,18 @@ export const useNotificationStore = defineStore('notification', {
         await this.getNotificationsUser()
       }
     },
-    async clearAll(): Promise<void> {
+    async clearAll(notification: INotification): Promise<void> {
       const { token } = await this.getLoggedUser()
 
       if (token !== '') {
-        await api.delete('/api/v1/notification/delete-all', {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        await api.delete(
+          `/api/v1/notification/delete-all?idNotification=${notification.idNotification}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        })
+        )
 
         await this.getNotificationsUser()
       }
