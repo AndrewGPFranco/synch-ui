@@ -38,10 +38,18 @@
           </div>
 
           <div class="notification-actions">
-            <button class="action-btn mark-read" title="Marcar como lida">
+            <button
+              class="action-btn mark-read"
+              title="Marcar como lida"
+              @click="notificationService.markAsRead(notification)"
+            >
               <i class="pi pi-check"></i>
             </button>
-            <button class="action-btn remove" title="Remover">
+            <button
+              class="action-btn remove"
+              title="Remover"
+              @click="notificationService.removeNotification(notification)"
+            >
               <i class="pi pi-times"></i>
             </button>
           </div>
@@ -50,11 +58,11 @@
     </div>
 
     <div class="notifications-footer" v-if="props.notifications.length > 0">
-      <button class="footer-btn mark-all-read">
+      <button class="footer-btn mark-all-read" @click="notificationService.markAllRead">
         <i class="pi pi-check-circle"></i>
         Marcar todas como lidas
       </button>
-      <button class="footer-btn clear-all">
+      <button class="footer-btn clear-all" @click="notificationService.clearAll">
         <i class="pi pi-trash"></i>
         Limpar todas
       </button>
@@ -64,6 +72,7 @@
 
 <script setup lang="ts">
 import type { INotification } from '@/@types/INotification.ts'
+import NotificationService from '@/class/services/NotificationService.ts'
 
 interface Props {
   notifications: Array<INotification>
@@ -71,6 +80,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const emit = defineEmits(['closed'])
+const notificationService = new NotificationService()
 
 const closedNotifications = () => {
   emit('closed')

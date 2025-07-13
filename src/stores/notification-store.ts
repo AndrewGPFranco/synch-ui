@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import type { INotification } from '@/@types/INotification.ts'
 import { api } from '@/network/axiosInstance.ts'
-import type AuthenticatedUserDto from '@/class/dtos/AuthenticatedUserDto.ts'
 import { useAuthStore } from '@/stores/auth-store.ts'
+import type { INotification } from '@/@types/INotification.ts'
+import type AuthenticatedUserDto from '@/class/dtos/AuthenticatedUserDto.ts'
 
 export const useNotificationStore = defineStore('notification', {
   state: () => ({
@@ -28,6 +28,65 @@ export const useNotificationStore = defineStore('notification', {
         }
       } catch (error) {
         console.error('Erro ao buscar notificações:', error)
+      }
+    },
+    async markAsRead(notification: INotification): Promise<void> {
+      const { token } = await this.getLoggedUser()
+
+      if (token !== '') {
+        await api.put(
+          `/api/v1/notification/mark-as-read-by-user/${notification.idNotification}`,
+          null,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        )
+
+        await this.getNotificationsUser()
+      }
+    },
+    async removeNotification(notification: INotification): Promise<void> {
+      const { token } = await this.getLoggedUser()
+
+      if (token !== '') {
+        await api.delete(
+          `/api/v1/notification/delete-notification/${notification.idNotification}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        )
+
+        await this.getNotificationsUser()
+      }
+    },
+    async markAllRead(): Promise<void> {
+      const { token } = await this.getLoggedUser()
+
+      if (token !== '') {
+        await api.put('/api/v1/notification/mark-all-as-read', null, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+
+        await this.getNotificationsUser()
+      }
+    },
+    async clearAll(): Promise<void> {
+      const { token } = await this.getLoggedUser()
+
+      if (token !== '') {
+        await api.delete('/api/v1/notification/delete-all', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+
+        await this.getNotificationsUser()
       }
     },
   },
