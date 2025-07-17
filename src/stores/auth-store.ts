@@ -30,8 +30,8 @@ export const useAuthStore = defineStore('auth', {
       token: string | null,
     ): Promise<void> {
       if (tokenDecode && token) {
-        this.user.setUsername(tokenDecode.sub);
-        this.user.setEmail(tokenDecode.email);
+        this.user.setUsername(tokenDecode.sub)
+        this.user.setEmail(tokenDecode.email)
         this.user.setToken(token)
       } else {
         const tokenStorage: string | null = localStorage.getItem('token')
@@ -42,17 +42,27 @@ export const useAuthStore = defineStore('auth', {
         }
       }
     },
-    isUserAutenticado(): boolean {
-      return this.user.token !== ''
-    },
     async register(data: IUserRegister): Promise<void> {
       await api.post('/api/v1/user/register', data)
     },
     logout(): void {
       localStorage.removeItem('token')
-      this.user.setUsername('');
-      this.user.setEmail('');
+      this.user.setUsername('')
+      this.user.setEmail('')
       this.user.setToken('')
+    },
+    async validToken(): Promise<boolean> {
+      const token = localStorage.getItem('token')
+
+      if (token !== undefined) {
+        const response = await api.get(`/api/v1/user/valid-token/${token}`)
+
+        return response.data === true
+      }
+
+      localStorage.removeItem('token')
+
+      return false
     },
   },
   getters: {
