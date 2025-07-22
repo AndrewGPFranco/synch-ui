@@ -9,7 +9,7 @@
     </div>
 
     <div>
-      <button class="button-notifications" :class="{ isHome: isHome }" @click="show">
+      <button class="button-notifications" :class="{ isHome: isHome }" @click="show" v-if="!isAuth">
         <div class="notification-icon-wrapper">
           <i class="pi pi-bell notification-icon"></i>
           <span
@@ -22,7 +22,7 @@
         </div>
       </button>
       <button
-        v-if="!isHome"
+        v-if="!isHome && !isAuth"
         class="button-home"
         @click="goHome"
         :class="{ 'button-home--hidden': isHome }"
@@ -50,6 +50,7 @@ const notificationStore = useNotificationStore()
 let intervalId: number | undefined
 const showNotifications = ref<boolean>(false)
 const isHome = computed(() => route.name === 'home')
+const isAuth = computed(() => route.name === 'login')
 const notifications = computed(() => notificationStore.notifications)
 const hasNotification = computed(() => notificationStore.notifications.length > 0)
 
