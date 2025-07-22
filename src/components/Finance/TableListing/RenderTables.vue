@@ -59,6 +59,34 @@
         </tbody>
       </n-table>
 
+      <n-modal v-model:show="showModal" @update:show="handleModalClose">
+        <n-card
+          style="width: 600px"
+          :bordered="false"
+          size="huge"
+          role="dialog"
+          aria-modal="true"
+          closable
+          @close="closeModal"
+        >
+          <div class="container-invite">
+            <label for="email">Email do Convidado:</label>
+            <n-input
+              v-model:value="emailGuest"
+              type="text"
+              placeholder="Digite o email"
+              @keydown.enter="sendInvite"
+            />
+          </div>
+
+          <template #footer>
+            <n-space justify="end">
+              <n-button type="primary" @click="sendInvite">Enviar Convite</n-button>
+            </n-space>
+          </template>
+        </n-card>
+      </n-modal>
+
       <div class="mobile-cards">
         <div v-for="table in tables" :key="table.idTable" class="mobile-card">
           <div class="card-header">
@@ -121,24 +149,34 @@
 <script setup lang="ts">
 import { inject, ref, type Ref, watch } from 'vue'
 import DataUtils from '@/class/services/DataUtils.ts'
-import type { IFinanceTable } from '@/@types/IFinanceTable.ts'
 import { useFinanceStore } from '@/stores/finance-store.ts'
+import type { IFinanceTable } from '@/@types/IFinanceTable.ts'
 import FinanceService from '@/class/services/FinanceService.ts'
-import { NDropdown, NInput, NButton, NSpace, useMessage } from 'naive-ui'
+import NotificationService from '@/class/services/NotificationService.ts'
+import { NDropdown, NInput, NButton, NSpace, NModal, NCard, useMessage } from 'naive-ui'
 
 const toast = useMessage()
 const financeStore = useFinanceStore()
+const emailGuest = ref<string>('')
 const financeService = new FinanceService()
+const showModal = ref<boolean>(false)
 const tableNameEdit = ref<string>('')
-const editingTableId = ref<number | null>(null)
+const idTableClicked = ref<string>('')
+const notificationService = new NotificationService()
+const editingTableId = ref<string | null>(null)
 const tables = inject('userTables') as Ref<IFinanceTable[]>
 const options = [
   { label: 'Editar', key: 'edit' },
   { label: 'Apagar', key: 'delete' },
+  { label: 'Enviar convite', key: 'send' },
 ]
 
-const actionToData = async (idTable: number, action: string) => {
-  if (action === 'delete') {
+const actionToData = async (idTable: string, action: string) => {
+  if (action === 'send') {
+    showModal.value = true
+    console.log(idTable)
+    idTableClicked.value = idTable
+  } else if (action === 'delete') {
     const response = await financeService.deleteTable(idTable)
 
     if (response.getError() === null) {
@@ -152,7 +190,21 @@ const actionToData = async (idTable: number, action: string) => {
   }
 }
 
-const startEdit = (idTable: number) => {
+const closeModal = () => {
+  showModal.value = false
+}
+
+const handleModalClose = (value: boolean) => {
+  showModal.value = value
+}
+
+const sendInvite = () => {
+  notificationService.sendInvite(emailGuest.value, idTableClicked.value)
+  toast.success('Convite enviado com sucesso!')
+  closeModal()
+}
+
+const startEdit = (idTable: string) => {
   const table = tables.value.find((t) => t.idTable === idTable)
   if (table) {
     editingTableId.value = idTable
@@ -160,7 +212,7 @@ const startEdit = (idTable: number) => {
   }
 }
 
-const saveEdit = async (idTable: number) => {
+const saveEdit = async (idTable: string) => {
   if (!tableNameEdit.value.trim()) {
     toast.warning('O nome da tabela não pode estar vazio')
     return
@@ -444,6 +496,12 @@ watch(
     color: #991b1b;
     border: 1px solid #f87171;
   }
+}
+
+.container-invite {
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
 }
 
 @media (max-width: 1024px) {

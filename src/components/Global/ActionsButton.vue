@@ -67,7 +67,6 @@ const handlerClosedNotification = () => {
 }
 
 onMounted(async () => {
-  if (isHome.value) await getNotifications()
   intervalId = setInterval(getNotifications, 120000)
 })
 

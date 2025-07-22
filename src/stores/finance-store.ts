@@ -40,7 +40,7 @@ export const useFinanceStore = defineStore('finance', {
 
       await this.getTablesByUser()
     },
-    async deleteTable(idTable: number): Promise<void> {
+    async deleteTable(idTable: string): Promise<void> {
       const { token } = await this.getLoggedUser()
       await api.delete(`/api/v1/finance/delete/${idTable}`, {
         headers: {
@@ -50,10 +50,10 @@ export const useFinanceStore = defineStore('finance', {
 
       await this.getTablesByUser()
     },
-    async editTableName(idTable: number, newName: string): Promise<void> {
+    async editTableName(idTable: string, newName: string): Promise<void> {
       const { token } = await this.getLoggedUser()
 
-      const data: { idTable: number; newName: string } = {
+      const data: { idTable: string; newName: string } = {
         idTable,
         newName,
       }
