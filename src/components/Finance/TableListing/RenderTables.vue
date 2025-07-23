@@ -198,10 +198,13 @@ const handleModalClose = (value: boolean) => {
   showModal.value = value
 }
 
-const sendInvite = () => {
-  notificationService.sendInvite(emailGuest.value, idTableClicked.value)
-  toast.success('Convite enviado com sucesso!')
-  closeModal()
+const sendInvite = async () => {
+  const responseAPI = await notificationService.sendInvite(emailGuest.value, idTableClicked.value)
+
+  if (responseAPI.getError() === null) {
+    toast.success(String(responseAPI.getResponse()))
+    closeModal()
+  } else toast.error(String(responseAPI.getError()))
 }
 
 const startEdit = (idTable: string) => {
