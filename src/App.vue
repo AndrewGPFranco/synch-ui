@@ -1,7 +1,9 @@
 <template>
   <n-message-provider>
-    <RouterView />
-    <ActionsButton v-if="isLoggedIn" />
+    <n-modal-provider>
+      <RouterView />
+      <ActionsButton v-if="isLoggedIn" />
+    </n-modal-provider>
   </n-message-provider>
 </template>
 
@@ -13,10 +15,12 @@ import { RouterView, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth-store.ts'
 import AuthService from '@/class/services/AuthService.ts'
 import ActionsButton from '@/components/Global/ActionsButton.vue'
+import { useNotificationStore } from '@/stores/notification-store.ts'
 
 const route = useRoute()
 const authStore = useAuthStore()
 const authService = new AuthService()
+const notificationStore = useNotificationStore();
 const isLoggedIn = computed(() => authStore.loggedUser.token !== '')
 
 onMounted(async () => {
@@ -26,6 +30,8 @@ onMounted(async () => {
     const isValid = await authStore.validToken()
 
     if (!isValid) await router.push({ name: 'login' })
+
+    await notificationStore.getNotificationsUser()
   }
 })
 </script>

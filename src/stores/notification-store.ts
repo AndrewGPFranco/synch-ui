@@ -33,10 +33,14 @@ export const useNotificationStore = defineStore('notification', {
     async markAsRead(notification: INotification): Promise<void> {
       const { token } = await this.getLoggedUser()
 
+      const data = {
+        idNotification: notification.idNotification
+      }
+
       if (token !== '') {
         await api.put(
-          `/api/v1/notification/mark-as-read-by-user/${notification.idNotification}`,
-          null,
+          `/api/v1/notification/mark-as-read-by-user`,
+          data,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -91,6 +95,21 @@ export const useNotificationStore = defineStore('notification', {
 
         await this.getNotificationsUser()
       }
+    },
+    async sendInvite(emailGuest: string, idFinanceTable: string): Promise<void> {
+      const { token } = await this.getLoggedUser()
+
+      const data = {
+        notificationType: 'ACCESS_TABLE',
+        destinationUsers: [emailGuest],
+        financeTableId: idFinanceTable
+      }
+
+      await api.post('/api/v1/notification/new/access-table', data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
     },
   },
   getters: {

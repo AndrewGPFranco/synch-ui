@@ -22,7 +22,7 @@ class FinanceService {
     }
   }
 
-  async deleteTable(idTable: number): Promise<ResponseAPI<string, string>> {
+  async deleteTable(idTable: string): Promise<ResponseAPI<string, string>> {
     try {
       await this.financeStore.deleteTable(idTable)
       return new ResponseAPI<string, string>(null, 'Tabela deletada com sucesso!')
@@ -35,7 +35,7 @@ class FinanceService {
     }
   }
 
-  async editTableName(idTable: number, newName: string): Promise<ResponseAPI<string, string>> {
+  async editTableName(idTable: string, newName: string): Promise<ResponseAPI<string, string>> {
     try {
       await this.financeStore.editTableName(idTable, newName)
       return new ResponseAPI<string, string>(null, 'Tabela renomeada com sucesso!')
