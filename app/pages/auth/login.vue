@@ -56,4 +56,8 @@ async function onSubmit() {
   toast.add({title: 'Sucesso', description: responseAPI.getResponse(), color: 'success'})
   await router.push("/")
 }
+
+definePageMeta({
+  middleware: 'auth'
+})
 </script>
