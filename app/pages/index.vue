@@ -4,7 +4,6 @@
     <USeparator/>
     <UAvatar src="https://github.com/AndrewGPFranco.png"/>
     <USeparator/>
-    <ULink to="/auth/login">Login</ULink>
   </div>
 </template>
 
