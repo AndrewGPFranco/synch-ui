@@ -3,9 +3,6 @@ export default defineNuxtConfig({
     devtools: {enabled: true},
     modules: ['@nuxt/ui', '@pinia/nuxt'],
     css: ['~/assets/css/main.css'],
-    ui: {
-        colorMode: false
-    },
     app: {
         head: {
             title: 'Synch | Finanças',
