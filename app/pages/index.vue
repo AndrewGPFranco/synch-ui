@@ -11,4 +11,11 @@
 definePageMeta({
   middleware: 'auth'
 })
+
+useHead({
+  title: 'Synch | Finanças - Dashboard',
+  meta: [
+    { name: 'description', content: 'Dashboard da plataforma' },
+  ],
+})
 </script>
