@@ -1,11 +1,11 @@
 <template>
-  <section class="p-10">
-    <UTable :data="data" :columns="columns" class="w-full"/>
-  </section>
+  <UTable :data="data" :columns="columns" class="w-full p-10"/>
 </template>
 
 <script setup lang="ts">
+import {NuxtLink} from "#components";
 import type {IUser} from "~/types/IUser";
+import type {IExpense} from "~/types/IExpense";
 import {useFinanceStore} from "~/stores/finance-store";
 import type {ITableFinance} from "~/types/ITableFinance";
 import type {TableColumn} from "#ui/components/Table.vue";
@@ -16,7 +16,17 @@ const financeStore = useFinanceStore();
 const columns: TableColumn<ITableFinance>[] = [
   {
     accessorKey: 'tableName',
-    header: 'Nome da Tabela'
+    header: 'Nome da Tabela',
+    cell: ({row}) => {
+      return h(
+          NuxtLink,
+          {
+            to: `/finance/tables/${row.original.idTable}`,
+            class: 'text-blue-300 hover:underline'
+          },
+          {default: () => row.getValue('tableName')}
+      )
+    }
   },
   {
     accessorKey: 'createdAt',
@@ -34,7 +44,7 @@ const columns: TableColumn<ITableFinance>[] = [
     accessorKey: 'updatedAt',
     header: 'Última atualização',
     cell: ({row}) => {
-      return new Date(row.getValue('createdAt')).toLocaleString('pt-BR', {
+      return new Date(row.getValue('updatedAt')).toLocaleString('pt-BR', {
         day: 'numeric',
         month: 'short',
         hour: '2-digit',
@@ -46,7 +56,7 @@ const columns: TableColumn<ITableFinance>[] = [
     accessorKey: 'users',
     header: 'Usuários',
     cell: ({row}) => {
-      const users = row.getValue('users');
+      const users: IUser[] = row.getValue('users');
       return users.map((user: IUser) => user.nickname).join(', ');
     }
   },
@@ -54,9 +64,9 @@ const columns: TableColumn<ITableFinance>[] = [
     accessorKey: 'expenses',
     header: 'Total de itens',
     cell: ({row}) => {
-      return row.getValue('expenses').length;
+      return row.getValue<IExpense[]>('expenses').length;
     }
-  }
+  },
 ];
 
 onMounted(async () => {
