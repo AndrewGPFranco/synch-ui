@@ -33,7 +33,7 @@ const columns: TableColumn<ITableFinance>[] = [
     header: 'Criado em',
     cell: ({row}) => {
       const dateStr = row.getValue('createdAt')
-      return new Date(dateStr + 'T00:00:00').toLocaleString('pt-BR', {
+      return new Date(dateStr + '').toLocaleString('pt-BR', {
         day: 'numeric',
         month: 'short',
         year: 'numeric'
@@ -45,7 +45,7 @@ const columns: TableColumn<ITableFinance>[] = [
     header: 'Última atualização',
     cell: ({row}) => {
       const dateStr = row.getValue('updatedAt')
-      return new Date(dateStr + 'T00:00:00').toLocaleString('pt-BR', {
+      return new Date(dateStr + '').toLocaleString('pt-BR', {
         day: 'numeric',
         month: 'short',
         year: 'numeric'

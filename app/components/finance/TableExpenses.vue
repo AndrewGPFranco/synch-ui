@@ -106,20 +106,4 @@ const columns: TableColumn<IExpense>[] = [
     }
   },
 ];
-
-const router = useRouter()
-
-onMounted(() => {
-  window.history.pushState({page: 'finance'}, '', window.location.href)
-
-  window.addEventListener('popstate', handleBackButton)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('popstate', handleBackButton)
-})
-
-const handleBackButton = () => {
-  router.push('/')
-}
 </script>
