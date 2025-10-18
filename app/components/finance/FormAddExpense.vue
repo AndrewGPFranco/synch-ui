@@ -5,10 +5,10 @@
         icon="i-heroicons-plus-circle"
         size="lg"
         class="fixed bottom-6 right-6 z-50
-         bg-gradient-to-r from-purple-600 to-indigo-600
-         hover:from-purple-700 hover:to-indigo-700 cursor-pointer
-         text-white font-semibold shadow-lg hover:shadow-purple-500/50
-         transition-all duration-300 transform hover:scale-105"
+     bg-gradient-to-r from-gray-800 to-gray-900
+     hover:from-black hover:to-gray-800 cursor-pointer
+     text-white font-semibold shadow-lg hover:shadow-gray-500/30
+     transition-all duration-300 transform hover:scale-105"
     />
 
     <template #body>
@@ -89,6 +89,7 @@
 
 <script setup lang="ts">
 import type {IAddExpense} from "~/types/IAddExpense";
+import {categories, categoriesAsList, months, monthsAsList} from "~/utils/Constants";
 
 const toast = useToast();
 const route = useRoute();
@@ -96,32 +97,6 @@ const isOpen = ref<boolean>(false);
 const financeStore = useFinanceStore();
 
 const emit = defineEmits(["update-expenses"]);
-
-const monthsAsList = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-
-const months: Map<string, string> = new Map([
-  ["Janeiro", "JANUARY"],
-  ["Fevereiro", "FEBRUARY"],
-  ["Março", "MARCH"],
-  ["Abril", "APRIL"],
-  ["Maio", "MAY"],
-  ["Junho", "JUNE"],
-  ["Julho", "JULY"],
-  ["Agosto", "AUGUST"],
-  ["Setembro", "SEPTEMBER"],
-  ["Outubro", "OCTOBER"],
-  ["Novembro", "NOVEMBER"],
-  ["Dezembro", "DEZEMBER"],
-]);
-
-const categoriesAsList = ["Despesa Fixa", "Despesa Variável", "Despesa Imprevista"];
-
-const categories: Map<string, string> = new Map([
-  ["Despesa Fixa", "FIXED"],
-  ["Despesa Variável", "VARIABLE"],
-  ["Despesa Imprevista", "UNFORESSEN"]
-]);
 
 const selectCategory = () => {
   expense.value.paymentCategory = categories.get(expense.value.paymentCategory) as string;

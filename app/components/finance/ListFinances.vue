@@ -32,11 +32,11 @@ const columns: TableColumn<ITableFinance>[] = [
     accessorKey: 'createdAt',
     header: 'Criado em',
     cell: ({row}) => {
-      return new Date(row.getValue('createdAt')).toLocaleString('pt-BR', {
+      const dateStr = row.getValue('createdAt')
+      return new Date(dateStr + 'T00:00:00').toLocaleString('pt-BR', {
         day: 'numeric',
         month: 'short',
-        hour: '2-digit',
-        minute: '2-digit'
+        year: 'numeric'
       })
     }
   },
@@ -44,11 +44,11 @@ const columns: TableColumn<ITableFinance>[] = [
     accessorKey: 'updatedAt',
     header: 'Última atualização',
     cell: ({row}) => {
-      return new Date(row.getValue('updatedAt')).toLocaleString('pt-BR', {
+      const dateStr = row.getValue('updatedAt')
+      return new Date(dateStr + 'T00:00:00').toLocaleString('pt-BR', {
         day: 'numeric',
         month: 'short',
-        hour: '2-digit',
-        minute: '2-digit'
+        year: 'numeric'
       })
     }
   },

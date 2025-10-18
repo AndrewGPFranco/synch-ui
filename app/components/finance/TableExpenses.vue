@@ -84,14 +84,26 @@ const columns: TableColumn<IExpense>[] = [
   {
     accessorKey: 'paymentDate',
     header: 'Data do Pagamento',
-    cell: ({row}) => new Date(row.getValue('paymentDate'))
-        .toLocaleString('pt-BR', {day: 'numeric', month: 'short', year: 'numeric'})
+    cell: ({row}) => {
+      const dateStr = row.getValue('paymentDate')
+      return new Date(dateStr + 'T00:00:00').toLocaleString('pt-BR', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      })
+    }
   },
   {
     accessorKey: 'dueDate',
     header: 'Data de Vencimento',
-    cell: ({row}) => new Date(row.getValue('dueDate'))
-        .toLocaleString('pt-BR', {day: 'numeric', month: 'short', year: 'numeric'})
+    cell: ({row}) => {
+      const dateStr = row.getValue('dueDate')
+      return new Date(dateStr + 'T00:00:00').toLocaleString('pt-BR', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      })
+    }
   },
 ];
 
