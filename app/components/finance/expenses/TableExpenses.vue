@@ -1,16 +1,26 @@
 <template>
   <UTable :data="expensesCopy" :columns="columns" class="w-full p-10"/>
+
+  <ModalAsk
+      :is-open="isOpen"
+      message-ask="Tem certeza que deseja apagar a despesa?"
+      title="Deletar despesa"
+      @close-modal="handleCloseModal"
+  />
 </template>
 
 <script setup lang="ts">
 import type {IExpense} from '~/types/IExpense';
 import {UButton, UDropdownMenu} from "#components";
+import ModalAsk from "~/components/finance/ModalAsk.vue";
 import {getMonth, getPaymentCategory} from '~/utils/TableUtils';
 //@ts-ignore
 import type {TableColumn, TableRow} from '#ui/components/Table.vue';
 
 const toast = useToast();
+const isOpen = ref<boolean>(false);
 const deletedIds = new Set<string>();
+const idASerRemovido = ref<string>("");
 const financeStore = useFinanceStore();
 
 const props = defineProps({
@@ -22,8 +32,8 @@ const props = defineProps({
 
 const expensesCopy = ref<IExpense[]>([...props.expenses])
 
-const deleteItem = async (id: string) => {
-  const responseAPI = await financeStore.deleteItem(id);
+const deleteItem = async () => {
+  const responseAPI = await financeStore.deleteItem(idASerRemovido.value);
 
   if (responseAPI.getError()) {
     toast.add({title: 'Erro', description: responseAPI.getResponse(), color: 'error'});
@@ -32,7 +42,7 @@ const deleteItem = async (id: string) => {
 
   toast.add({title: 'Sucesso', description: responseAPI.getResponse(), color: 'success'})
 
-  deletedIds.add(id);
+  deletedIds.add(idASerRemovido.value);
 
   expensesCopy.value = props.expenses.filter((item: IExpense) => !deletedIds.has(item.idExpense));
 }
@@ -139,10 +149,19 @@ const getRowItems = (row: TableRow<IExpense>) => {
     {
       label: 'Remover despesa',
       onClick: async () => {
-        await deleteItem(row.getValue("idExpense"));
+        idASerRemovido.value = row.getValue("idExpense");
+        isOpen.value = true;
       }
     }
   ]
+}
+
+const handleCloseModal = (isDelete: boolean) => {
+  if (isDelete) {
+    deleteItem();
+  }
+
+  isOpen.value = false;
 }
 
 watch(() => props.expenses, (newVal) => {

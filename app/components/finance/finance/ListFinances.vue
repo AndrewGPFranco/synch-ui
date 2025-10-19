@@ -1,5 +1,12 @@
 <template>
   <UTable :data="financesCopy" :columns="columns" class="w-full p-10"/>
+
+  <ModalAsk
+      :is-open="isOpen"
+      message-ask="Tem certeza que deseja apagar a tabela e suas respectivas despesas?"
+      title="Deletar tabela"
+      @close-modal="handleCloseModal"
+  />
 </template>
 
 <script setup lang="ts">
@@ -7,13 +14,17 @@ import type {IUser} from "~/types/IUser";
 import type {IExpense} from "~/types/IExpense";
 import {useFinanceStore} from "~/stores/finance-store";
 import type {ITableFinance} from "~/types/ITableFinance";
+import ModalAsk from "~/components/finance/ModalAsk.vue";
 import {NuxtLink, UButton, UDropdownMenu} from "#components";
 //@ts-ignore
 import type {TableColumn, TableRow} from "#ui/components/Table.vue";
 
 const toast = useToast();
+const isOpen = ref<boolean>(false);
 const deletedIds = new Set<string>();
 const financeStore = useFinanceStore();
+
+const idASerRemovido = ref<string>("");
 
 const props = defineProps({
   tables: {
@@ -127,14 +138,23 @@ const getRowItems = (row: TableRow<ITableFinance>) => {
     {
       label: 'Remover tabela',
       onClick: async () => {
-        await deleteTable(row.getValue("idTable"));
+        idASerRemovido.value = row.getValue("idTable");
+        isOpen.value = true;
       }
     }
   ]
 }
 
-const deleteTable = async (id: string) => {
-  const responseAPI = await financeStore.deleteTable(id);
+const handleCloseModal = (isDelete: boolean) => {
+  if (isDelete) {
+    deleteTable();
+  }
+
+  isOpen.value = false;
+}
+
+const deleteTable = async () => {
+  const responseAPI = await financeStore.deleteTable(idASerRemovido.value);
 
   if (responseAPI.getError()) {
     toast.add({title: 'Erro', description: responseAPI.getResponse(), color: 'error'});
@@ -143,7 +163,9 @@ const deleteTable = async (id: string) => {
 
   toast.add({title: 'Sucesso', description: responseAPI.getResponse(), color: 'success'})
 
-  deletedIds.add(id);
+  isOpen.value = false;
+
+  deletedIds.add(idASerRemovido.value);
 
   financesCopy.value = props.tables.filter((item: ITableFinance) => !deletedIds.has(item.idTable));
 }
