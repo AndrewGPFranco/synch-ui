@@ -77,10 +77,28 @@ export const useFinanceStore = defineStore("finance-store", {
                     },
                 });
 
-                return new ResponseAPI(false, "Despesa adicionada com sucesso!");
+                return new ResponseAPI(false, "Despesa deletada com sucesso!");
             } catch (error) {
                 console.error("Erro ao adicionar despesa:", error);
-                return new ResponseAPI(true, "Erro ao adicionar despesa");
+                return new ResponseAPI(true, "Erro ao deletar despesa");
+            }
+        },
+        async deleteTable(id: string): Promise<ResponseAPI<string>> {
+            const token = useCookie("token").value;
+
+            try {
+                await $fetch(`/api/v1/finance/delete/${id}`, {
+                    baseURL: "http://localhost:8080",
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                return new ResponseAPI(false, "Tabela removida com sucesso!");
+            } catch (error) {
+                console.error("Erro ao adicionar despesa:", error);
+                return new ResponseAPI(true, "Erro ao remover tabela");
             }
         },
     },
