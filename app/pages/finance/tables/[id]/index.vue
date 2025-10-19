@@ -11,8 +11,8 @@
 
 <script setup lang="ts">
 import type {IExpense} from "~/types/IExpense";
-import TableExpenses from "~/components/finance/TableExpenses.vue";
-import FormAddExpense from "~/components/finance/FormAddExpense.vue";
+import TableExpenses from "~/components/finance/expenses/TableExpenses.vue";
+import FormAddExpense from "~/components/finance/expenses/FormAddExpense.vue";
 
 const route = useRoute();
 const expenses = ref<IExpense[]>([]);

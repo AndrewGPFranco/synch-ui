@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import ListFinances from "~/components/finance/ListFinances.vue";
+import ListFinances from "~/components/finance/finance/ListFinances.vue";
 
 useHead({
   title: 'Synch | Finanças - Despesas',
