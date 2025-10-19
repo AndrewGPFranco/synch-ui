@@ -30,4 +30,11 @@ const getItems = async (id: string): Promise<IExpense[]> => {
 onMounted(async () => {
   expenses.value = await getItems(route.params.id as string);
 })
+
+useHead({
+  title: `Synch | Finanças - ${route.query.name}`,
+  meta: [
+    {name: 'description', content: 'Tabela com as despesas'},
+  ],
+})
 </script>

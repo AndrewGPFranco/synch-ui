@@ -28,11 +28,11 @@ const columns: TableColumn<ITableFinance>[] = [
   {
     accessorKey: 'tableName',
     header: 'Nome da Tabela',
-    cell: ({row}: {row: TableRow<ITableFinance>}) => {
+    cell: ({row}: { row: TableRow<ITableFinance> }) => {
       return h(
           NuxtLink,
           {
-            to: `/finance/tables/${row.original.idTable}`,
+            to: {path: `/finance/tables/${row.original.idTable}`, query: {name: row.original.tableName}},
             class: 'text-blue-300 hover:underline'
           },
           {default: () => row.getValue('tableName')}
@@ -42,7 +42,7 @@ const columns: TableColumn<ITableFinance>[] = [
   {
     accessorKey: 'createdAt',
     header: 'Criado em',
-    cell: ({row}: {row: TableRow<ITableFinance>}) => {
+    cell: ({row}: { row: TableRow<ITableFinance> }) => {
       const dateStr = row.getValue('createdAt')
       return new Date(dateStr + '').toLocaleString('pt-BR', {
         day: 'numeric',
@@ -54,7 +54,7 @@ const columns: TableColumn<ITableFinance>[] = [
   {
     accessorKey: 'updatedAt',
     header: 'Última atualização',
-    cell: ({row}: {row: TableRow<ITableFinance>}) => {
+    cell: ({row}: { row: TableRow<ITableFinance> }) => {
       const dateStr = row.getValue('updatedAt')
       return new Date(dateStr + '').toLocaleString('pt-BR', {
         day: 'numeric',
@@ -66,7 +66,7 @@ const columns: TableColumn<ITableFinance>[] = [
   {
     accessorKey: 'users',
     header: 'Usuários',
-    cell: ({row}: {row: TableRow<ITableFinance>}) => {
+    cell: ({row}: { row: TableRow<ITableFinance> }) => {
       const users: IUser[] = row.getValue('users');
       return users.map((user: IUser) => user.nickname).join(', ');
     }
@@ -74,13 +74,13 @@ const columns: TableColumn<ITableFinance>[] = [
   {
     accessorKey: 'expenses',
     header: 'Total de itens',
-    cell: ({row}: {row: TableRow<ITableFinance>}) => {
+    cell: ({row}: { row: TableRow<ITableFinance> }) => {
       return row.getValue<IExpense[]>('expenses').length;
     }
   },
   {
     id: 'actions',
-    cell: ({row}: {row: TableRow<ITableFinance>}) => {
+    cell: ({row}: { row: TableRow<ITableFinance> }) => {
       return h(
           'div',
           {class: 'text-right'},

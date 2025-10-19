@@ -103,10 +103,10 @@ const schema = z.object({
 const expense = ref<IAddExpense>({
   idTable: "",
   name: "",
-  month: "",
+  month: "JANUARY",
   amount: 0,
   paymentDate: null,
-  paymentCategory: "",
+  paymentCategory: "FIXED",
   dueDate: null,
 });
 

@@ -6,4 +6,11 @@
 
 <script setup lang="ts">
 import ListFinances from "~/components/finance/ListFinances.vue";
+
+useHead({
+  title: 'Synch | Finanças - Despesas',
+  meta: [
+    {name: 'description', content: 'Tabelas de despesas'},
+  ],
+})
 </script>
