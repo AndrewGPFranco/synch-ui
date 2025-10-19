@@ -5,8 +5,8 @@
 <script setup lang="ts">
 import type {IExpense} from '~/types/IExpense';
 import {UButton, UDropdownMenu} from "#components";
+import {getMonth, getPaymentCategory} from '~/utils/TableUtils';
 //@ts-ignore
-import { getMonth, getPaymentCategory } from '~/utils/TableUtils';
 import type {TableColumn, TableRow} from '#ui/components/Table.vue';
 
 const toast = useToast();
@@ -38,19 +38,25 @@ const deleteItem = async (id: string) => {
 }
 
 const columns: TableColumn<IExpense>[] = [
-  {accessorKey: 'idExpense', header: 'ID'},
+  {
+    accessorKey: 'idExpense',
+    header: '',
+    cell: () => {
+      return "*"
+    }
+  },
   {accessorKey: 'name', header: 'Nome'},
   {
     accessorKey: 'month',
     header: 'Mês',
-    cell: ({row}: {row: TableRow<IExpense>}) => {
+    cell: ({row}: { row: TableRow<IExpense> }) => {
       return getMonth(row);
     }
   },
   {
     accessorKey: 'amount',
     header: 'Valor',
-    cell: ({row}: {row: TableRow<IExpense>}) => {
+    cell: ({row}: { row: TableRow<IExpense> }) => {
       const value = row.getValue("amount") as number;
       return Intl.NumberFormat('pt-br', {style: 'currency', currency: 'BRL'}).format(value)
     }
@@ -58,26 +64,31 @@ const columns: TableColumn<IExpense>[] = [
   {
     accessorKey: 'paymentCategory',
     header: 'Categoria',
-    cell: ({row}: {row: TableRow<IExpense>}) => {
+    cell: ({row}: { row: TableRow<IExpense> }) => {
       return getPaymentCategory(row);
     }
   },
   {
     accessorKey: 'paymentDate',
     header: 'Data do Pagamento',
-    cell: ({row}: {row: TableRow<IExpense>}) => {
+    cell: ({row}: { row: TableRow<IExpense> }) => {
       const dateStr = row.getValue('paymentDate')
-      return new Date(dateStr + 'T00:00:00').toLocaleString('pt-BR', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      })
+
+      if (dateStr) {
+        return new Date(dateStr + 'T00:00:00').toLocaleString('pt-BR', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        })
+      }
+
+      return "Aguardando Pagamento..."
     }
   },
   {
     accessorKey: 'dueDate',
     header: 'Data de Vencimento',
-    cell: ({row}: {row: TableRow<IExpense>}) => {
+    cell: ({row}: { row: TableRow<IExpense> }) => {
       const dateStr = row.getValue('dueDate')
       return new Date(dateStr + 'T00:00:00').toLocaleString('pt-BR', {
         day: 'numeric',
@@ -88,7 +99,7 @@ const columns: TableColumn<IExpense>[] = [
   },
   {
     id: 'actions',
-    cell: ({row}: {row: TableRow<IExpense>}) => {
+    cell: ({row}: { row: TableRow<IExpense> }) => {
       return h(
           'div',
           {class: 'text-right'},
@@ -135,7 +146,7 @@ const getRowItems = (row: TableRow<IExpense>) => {
 }
 
 watch(() => props.expenses, (newVal) => {
-    expensesCopy.value = [...newVal]
-  }
+      expensesCopy.value = [...newVal]
+    }
 )
 </script>

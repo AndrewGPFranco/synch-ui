@@ -20,9 +20,9 @@ const financesCopy = ref<ITableFinance[]>([] as ITableFinance[])
 const columns: TableColumn<ITableFinance>[] = [
   {
     accessorKey: 'idTable',
-    header: 'ID',
-    rcell: ({row}: {row: TableRow<ITableFinance>}) => {
-      return row.getValue('idTable');
+    header: '',
+    cell: () => {
+      return "*"
     }
   },
   {
