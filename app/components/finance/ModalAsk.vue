@@ -10,7 +10,7 @@
               color="neutral"
               variant="outline"
               size="lg"
-              class="flex-1"
+              class="flex-1 cursor-pointer"
               @click="closeModal(false)"
           >
             Cancelar
@@ -18,7 +18,7 @@
           <UButton
               color="warning"
               size="lg"
-              class="flex-1 font-semibold"
+              class="flex-1 font-semibold cursor-pointer"
               @click="closeModal(true)"
           >
             Confirmar
