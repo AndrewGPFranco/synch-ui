@@ -24,5 +24,5 @@ export const categoriesAsList = ["Despesa Fixa", "Despesa Variável", "Despesa I
 export const categories: Map<string, string> = new Map([
     ["Despesa Fixa", "FIXED"],
     ["Despesa Variável", "VARIABLE"],
-    ["Despesa Imprevista", "UNFORESSEN"]
+    ["Despesa Imprevista", "UNFORESEEN"]
 ]);

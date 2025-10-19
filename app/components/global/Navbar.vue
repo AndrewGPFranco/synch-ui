@@ -1,22 +1,3 @@
-<script setup lang="ts">
-import type {NavigationMenuItem} from '@nuxt/ui'
-
-const route = useRoute()
-
-const items = computed<NavigationMenuItem[]>(() => [
-  {
-    label: 'Dashboard',
-    to: '/',
-    active: route.path === '/'
-  },
-  {
-    label: 'Minhas Finanças',
-    to: '/finance/tables',
-    active: route.path.startsWith('/finance/tables')
-  },
-])
-</script>
-
 <template>
   <UHeader>
     <template #title>
@@ -36,7 +17,41 @@ const items = computed<NavigationMenuItem[]>(() => [
             aria-label="GitHub"
         />
       </UTooltip>
+      <UTooltip text="Sair">
+        <UButton
+            color="neutral"
+            variant="ghost"
+            @click="logout"
+            icon="i-lucide-log-out"
+            aria-label="GitHub"
+            class="cursor-pointer"
+        />
+      </UTooltip>
     </template>
   </UHeader>
 </template>
 
+<script setup lang="ts">
+import type {NavigationMenuItem} from '@nuxt/ui'
+
+const route = useRoute()
+const router = useRouter()
+
+const items = computed<NavigationMenuItem[]>(() => [
+  {
+    label: 'Dashboard',
+    to: '/',
+    active: route.path === '/'
+  },
+  {
+    label: 'Minhas Finanças',
+    to: '/finance/tables',
+    active: route.path.startsWith('/finance/tables')
+  },
+])
+
+const logout = () => {
+  useCookie('token').value = null;
+  router.replace('/auth/login')
+}
+</script>
