@@ -5,6 +5,8 @@
 <script setup lang="ts">
 import type {IExpense} from '~/types/IExpense';
 import {UButton, UDropdownMenu} from "#components";
+//@ts-ignore
+import { getMonth, getPaymentCategory } from '~/utils/TableUtils';
 import type {TableColumn, TableRow} from '#ui/components/Table.vue';
 
 const toast = useToast();
@@ -19,50 +21,6 @@ const props = defineProps({
 });
 
 const expensesCopy = ref<IExpense[]>([...props.expenses])
-
-const getPaymentCategory = (row: TableRow<IExpense>): string => {
-  switch (row.getValue("paymentCategory")) {
-    case "FIXED":
-      return "Despesa FIXA";
-    case "VARIABLE":
-      return "Despesa variável";
-    case "UNFORESEEN":
-      return "Despesa imprevísivel";
-    default:
-      return "Categoria desconhecida";
-  }
-}
-
-const getMonth = (row: TableRow<IExpense>): string => {
-  switch (row.getValue("month")) {
-    case "JANUARY":
-      return "Janeiro";
-    case "FEBRUARY":
-      return "Fevereiro";
-    case "MARCH":
-      return "Março";
-    case "APRIL":
-      return "Abril";
-    case "MAY":
-      return "Maio";
-    case "JUNE":
-      return "Junho";
-    case "JULY":
-      return "Julho";
-    case "AUGUST":
-      return "Agosto";
-    case "SEPTEMBER":
-      return "Setembro";
-    case "OCTOBER":
-      return "Outubro";
-    case "NOVEMBER":
-      return "Novembro";
-    case "DEZEMBER":
-      return "Dezembro";
-    default:
-      return "Mês desconhecido!"
-  }
-}
 
 const deleteItem = async (id: string) => {
   const responseAPI = await financeStore.deleteItem(id);
@@ -176,10 +134,8 @@ const getRowItems = (row: TableRow<IExpense>) => {
   ]
 }
 
-watch(
-    () => props.expenses,
-    (newVal) => {
-      expensesCopy.value = [...newVal]
-    }
+watch(() => props.expenses, (newVal) => {
+    expensesCopy.value = [...newVal]
+  }
 )
 </script>
