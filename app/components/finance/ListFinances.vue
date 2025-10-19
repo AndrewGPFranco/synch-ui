@@ -80,7 +80,7 @@ const columns: TableColumn<ITableFinance>[] = [
   },
   {
     id: 'actions',
-    cell: ({row}: {row: TableRow<IExpense>}) => {
+    cell: ({row}: {row: TableRow<ITableFinance>}) => {
       return h(
           'div',
           {class: 'text-right'},
