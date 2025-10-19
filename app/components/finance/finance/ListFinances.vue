@@ -13,9 +13,16 @@ import type {TableColumn, TableRow} from "#ui/components/Table.vue";
 
 const toast = useToast();
 const deletedIds = new Set<string>();
-const data = ref<ITableFinance[]>([]);
 const financeStore = useFinanceStore();
-const financesCopy = ref<ITableFinance[]>([] as ITableFinance[])
+
+const props = defineProps({
+  tables: {
+    type: Array as PropType<ITableFinance[]>,
+    required: true,
+  }
+});
+
+const financesCopy = ref<ITableFinance[]>([...props.tables])
 
 const columns: TableColumn<ITableFinance>[] = [
   {
@@ -138,11 +145,11 @@ const deleteTable = async (id: string) => {
 
   deletedIds.add(id);
 
-  financesCopy.value = data.value.filter((item: ITableFinance) => !deletedIds.has(item.idTable));
+  financesCopy.value = props.tables.filter((item: ITableFinance) => !deletedIds.has(item.idTable));
 }
 
-onMounted(async () => {
-  data.value = await financeStore.getTablesByUser()
-  financesCopy.value = data.value
-});
+watch(() => props.tables, (newVal) => {
+      financesCopy.value = [...newVal]
+    }
+)
 </script>
