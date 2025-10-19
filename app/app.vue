@@ -1,5 +1,13 @@
 <template>
   <UApp>
-    <NuxtPage/>
+    <Navbar />
+
+    <UMain>
+      <NuxtLayout>
+        <NuxtPage/>
+      </NuxtLayout>
+    </UMain>
+
+    <Footer/>
   </UApp>
 </template>
