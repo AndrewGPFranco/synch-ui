@@ -7,6 +7,7 @@ type TimelineItem = {
   title: string
   description: string
   icon: string
+  notification: INotification
 }
 
 const notificationStore = useNotificationStore()
@@ -15,6 +16,16 @@ const notifications = computed(() => notificationStore.notifications)
 
 const items = ref<TimelineItem[]>([])
 
+const timelineColor = computed(() => notificationStore.notifications.filter(n => !n.wasRead).length > 0 ? 'neutral' : 'success')
+
+const handleAccept = (notification: INotification) => {
+  console.log('Aceito:', notification)
+}
+
+const handleReject = (notification: INotification) => {
+  console.log('Negado:', notification)
+}
+
 onMounted(() => {
   notifications.value.forEach((item: INotification) => {
     items.value.push({
@@ -22,11 +33,42 @@ onMounted(() => {
       title: item.notificationType,
       description: item.messageContent,
       icon: 'i-lucide-rocket',
+      notification: item
     })
   });
 })
 </script>
 
 <template>
-  <UTimeline :items="items"/>
+  <UTimeline
+      :items="items"
+      :default-value="2"
+      :color="timelineColor"
+      :ui="{ item: 'even:flex-row-reverse even:-translate-x-[calc(100%-2rem)] even:text-right' }"
+      class="translate-x-[calc(50%-1rem)]"
+  >
+    <template #description="{ item }">
+      <div>
+        <p class="mb-3">{{ item.description }}</p>
+        <div class="flex gap-2">
+          <UButton
+              class="cursor-pointer"
+              color="success"
+              size="xs"
+              @click="handleAccept(item.notification)"
+          >
+            Aceitar
+          </UButton>
+          <UButton
+              class="cursor-pointer"
+              color="warning"
+              size="xs"
+              @click="handleReject(item.notification)"
+          >
+            Negar
+          </UButton>
+        </div>
+      </div>
+    </template>
+  </UTimeline>
 </template>

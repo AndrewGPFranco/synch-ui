@@ -15,7 +15,7 @@
         class="absolute top-1 right-1 block h-2 w-2 rounded-full bg-red-500"
     />
 
-    <UModal title="Notificações" v-model:open="isOpen">
+    <UModal title="Notificações" class="w-full max-w-[40vw]" v-model:open="isOpen">
       <template #body>
         <UButton v-if="unreadCountComputed > 0"
                  class="cursor-pointer bg-transparent underline hover:bg-gray-600 mb-10 text-white"
