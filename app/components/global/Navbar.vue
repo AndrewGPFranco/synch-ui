@@ -17,6 +17,9 @@
             aria-label="GitHub"
         />
       </UTooltip>
+
+      <Notifications/>
+
       <UTooltip text="Sair">
         <UButton
             color="neutral"
@@ -32,10 +35,13 @@
 </template>
 
 <script setup lang="ts">
+import {UButton} from "#components";
 import type {NavigationMenuItem} from '@nuxt/ui'
+import Notifications from "~/components/notifications/Notifications.vue";
 
 const route = useRoute()
 const router = useRouter()
+const notificationStore = useNotificationStore()
 
 const items = computed<NavigationMenuItem[]>(() => [
   {
@@ -54,4 +60,8 @@ const logout = () => {
   useCookie('token').value = null;
   router.replace('/auth/login')
 }
+
+onMounted(async () => {
+  await notificationStore.getNotifications();
+})
 </script>
