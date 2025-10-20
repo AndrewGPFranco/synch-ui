@@ -12,18 +12,24 @@ type TimelineItem = {
 
 const notificationStore = useNotificationStore()
 
-const notifications = computed(() => notificationStore.notifications)
-
 const items = ref<TimelineItem[]>([])
+
+const notifications = computed(() => notificationStore.notifications)
 
 const timelineColor = computed(() => notificationStore.notifications.filter(n => !n.wasRead).length > 0 ? 'neutral' : 'success')
 
-const handleAccept = (notification: INotification) => {
-  console.log('Aceito:', notification)
+const handleAccept = async (notification: INotification) => {
+  await notificationStore.markNotificationAsReadAndAnswered({
+    idNotification: notification.idNotification,
+    wasAccepted: true
+  });
 }
 
-const handleReject = (notification: INotification) => {
-  console.log('Negado:', notification)
+const handleReject = async (notification: INotification) => {
+  await notificationStore.markNotificationAsReadAndAnswered({
+    idNotification: notification.idNotification,
+    wasAccepted: false
+  });
 }
 
 onMounted(() => {
@@ -50,7 +56,7 @@ onMounted(() => {
     <template #description="{ item }">
       <div>
         <p class="mb-3">{{ item.description }}</p>
-        <div class="flex gap-2">
+        <div class="flex gap-2" v-if="!item.notification.wasAnswered">
           <UButton
               class="cursor-pointer"
               color="success"

@@ -48,5 +48,23 @@ export const useNotificationStore = defineStore("notifications-store", {
                 console.error("Erro ao marcar notificações como lidas:", error);
             }
         },
+        async markNotificationAsReadAndAnswered(data: { idNotification: string, wasAccepted: boolean }): Promise<void> {
+            const token = useCookie("token").value;
+
+            try {
+                await $fetch<Response>(`/api/v1/notification/mark-as-read-by-user`, {
+                    baseURL: "http://localhost:8080",
+                    method: "PUT",
+                    body: data,
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                await this.getNotifications();
+            } catch (error) {
+                console.error("Erro ao marcar notificações como lida:", error);
+            }
+        },
     },
 });
