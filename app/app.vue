@@ -19,7 +19,11 @@ const rotasSemNavbarFooter = new Set(["/auth/login"])
 
 const toaster = {duration: 2000}
 
-watch(() => route.path, () => {
+const handleShowElements = () => {
   rotasSemNavbarFooter.has(route.path) ? show.value = false : show.value = true
-})
+}
+
+watch(() => route.path, () => handleShowElements())
+
+onMounted(() => handleShowElements())
 </script>
