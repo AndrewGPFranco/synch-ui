@@ -30,6 +30,23 @@ export const useNotificationStore = defineStore("notifications-store", {
                     this.getNotifications();
                 }, 120000)
             }
-        }
+        },
+        async markAllAsRead(): Promise<void> {
+            const token = useCookie("token").value;
+
+            try {
+                await $fetch<Response>(`/api/v1/notification/mark-all-as-read`, {
+                    baseURL: "http://localhost:8080",
+                    method: "PUT",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                await this.getNotifications();
+            } catch (error) {
+                console.error("Erro ao marcar notificações como lidas:", error);
+            }
+        },
     },
 });
