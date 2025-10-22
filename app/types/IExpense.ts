@@ -1,10 +1,10 @@
 export interface IExpense {
-    idExpense: string,
     name: string,
     month: string,
     amount: number,
+    dueDate: Date,
     paymentDate: Date,
+    idExpense: string,
     paymentCategory: string,
-    dueDate: Date
 }
 
