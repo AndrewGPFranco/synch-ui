@@ -1,23 +1,27 @@
 <template>
   <UApp :toaster="toaster">
-    <Navbar v-if="show"/>
+    <Navbar v-if="show" />
 
     <UMain>
       <NuxtLayout>
-        <NuxtPage/>
+        <NuxtPage />
       </NuxtLayout>
     </UMain>
 
-    <Footer v-if="show"/>
+    <Footer v-if="show" />
   </UApp>
 </template>
 
 <script lang="ts" setup>
+import { jwtDecode } from 'jwt-decode'
+import type { IDecodeJWT } from './types/IDecodeJWT'
+
 const route = useRoute()
 const show = ref<boolean>(true)
+const authStore = useAuthStore()
 const rotasSemNavbarFooter = new Set(["/auth/login"])
 
-const toaster = {duration: 2000}
+const toaster = { duration: 2000 }
 
 const handleShowElements = () => {
   rotasSemNavbarFooter.has(route.path) ? show.value = false : show.value = true
@@ -25,5 +29,14 @@ const handleShowElements = () => {
 
 watch(() => route.path, () => handleShowElements())
 
-onMounted(() => handleShowElements())
+onMounted(async () => {
+  const token = useCookie('token').value;
+
+  if (token) {
+    const decoded: IDecodeJWT = jwtDecode(token);
+  
+    await authStore.getUserLogged(decoded.id, token);
+  }
+  handleShowElements();
+})
 </script>
