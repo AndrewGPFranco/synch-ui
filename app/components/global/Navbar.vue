@@ -19,9 +19,9 @@
             <UButton color="neutral" variant="ghost" to="https://github.com/AndrewGPFranco" target="_blank"
               icon="i-simple-icons-github" aria-label="GitHub" />
           </UTooltip>
-  
+
           <Notifications />
-  
+
           <UTooltip text="Sair">
             <UButton color="neutral" variant="ghost" @click="logout" icon="i-lucide-log-out" aria-label="GitHub"
               class="cursor-pointer" />
@@ -63,6 +63,7 @@ const logout = () => {
 };
 
 onMounted(async () => {
-  await notificationStore.getNotifications();
+  if (route.path !== '/auth/login')
+    await notificationStore.getNotifications();
 });
 </script>
