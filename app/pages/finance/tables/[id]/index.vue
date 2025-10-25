@@ -1,8 +1,13 @@
 <template>
-  <main class="flex flex-col w-full h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-gray-900 overflow-hidden">
-    <FormAddExpense
+  <main class="flex flex-col w-full h-screen bg-linear-to-br from-gray-900 via-gray-950 to-gray-900 overflow-hidden">
+    <section class="flex flex-col gap-3">
+      <ReporteCalculoDespesas 
+        :idTable="route.params.id as string"
+      />
+      <FormAddExpense
         @update-expenses="updateExpenses"
-    />
+      />
+    </section>
     <TableExpenses
         :expenses="expenses"
     />
@@ -13,6 +18,7 @@
 import type {IExpense} from "~/types/IExpense";
 import TableExpenses from "~/components/finance/expenses/TableExpenses.vue";
 import FormAddExpense from "~/components/finance/expenses/FormAddExpense.vue";
+import ReporteCalculoDespesas from "~/components/finance/expenses/ReporteCalculoDespesas.vue";
 
 const route = useRoute();
 const expenses = ref<IExpense[]>([]);
