@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { jwtDecode } from "jwt-decode";
 import type { IUser } from "~/types/IUser";
 import ResponseAPI from "@/utils/ResponseAPI";
+import { useFetch, useCookie } from 'nuxt/app';
 import type { IUserLogin } from "~/types/IUserLogin";
 import type { IDecodeJWT } from "~/types/IDecodeJWT";
 

@@ -14,6 +14,8 @@
 
 <script lang="ts" setup>
 import { jwtDecode } from 'jwt-decode'
+import { ref, watch, onMounted } from 'vue'
+import { useRoute, useCookie } from 'nuxt/app'
 import type { IDecodeJWT } from './types/IDecodeJWT'
 
 const route = useRoute()
