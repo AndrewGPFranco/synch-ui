@@ -1,5 +1,5 @@
 <template>
-  <UApp :toaster="toaster">
+  <UApp :toaster="{ duration: 2000, position: 'top-right' }">
     <Navbar v-if="show" />
 
     <UMain>
@@ -23,8 +23,6 @@ const show = ref<boolean>(true)
 const authStore = useAuthStore()
 const rotasSemNavbarFooter = new Set(["/auth/login"])
 
-const toaster = { duration: 2000 }
-
 const handleShowElements = () => {
   rotasSemNavbarFooter.has(route.path) ? show.value = false : show.value = true
 }
@@ -36,7 +34,7 @@ onMounted(async () => {
 
   if (token) {
     const decoded: IDecodeJWT = jwtDecode(token);
-  
+
     await authStore.getUserLogged(decoded.id, token);
   }
   handleShowElements();
