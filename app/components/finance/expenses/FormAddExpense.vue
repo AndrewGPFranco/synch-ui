@@ -1,7 +1,7 @@
 <template>
   <UModal title="Adicionar uma despesa" v-model:open="isOpen">
     <UButton label="Adicionar Despesa" icon="i-heroicons-plus-circle" size="lg"
-             class="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-black hover:to-gray-600 cursor-pointer text-white font-semibold shadow-lg hover:shadow-gray-500/30 transition-all duration-300 transform hover:scale-105"/>
+             class="fixed bottom-6 right-6 z-50 bg-linear-to-r from-gray-600 to-gray-700 hover:from-black hover:to-gray-600 cursor-pointer text-white font-semibold shadow-lg hover:shadow-gray-500/30 transition-all duration-300 transform hover:scale-105"/>
 
     <template #body>
       <UForm :state="expense" @submit.prevent="onSubmit" class="flex flex-col gap-6">
@@ -48,6 +48,11 @@
         <UFormField label="Categoria do Gasto" name="paymentCategory" class="w-full text-gray-300">
           <USelect v-model="expense.paymentCategory" :items="categoriesAsList" @change="selectCategory"
                    class="w-full bg-gray-800/70 text-gray-100 placeholder-gray-500 border-gray-700 focus:border-purple-500 focus:ring-purple-500 transition-all"/>
+        </UFormField>
+
+        <UFormField label="Link Externo" description="* Caso seja uma compra a ser feita" name="link" class="w-full text-gray-300">
+          <UInput v-model="expense.link" placeholder="Link externo" size="lg"
+                  class="w-full bg-gray-800/70 text-gray-100 placeholder-gray-500 border-gray-700 focus:border-purple-500 focus:ring-purple-500 transition-all"/>
         </UFormField>
 
         <UButton type="submit" size="lg" block
@@ -98,6 +103,7 @@ const schema = z.object({
   amount: z.number().min(0, "O valor precisa ser maior que 0"),
   paymentCategory: z.string().max(10, "A categoria informada não faz parte das opções!").min(5, "A categoria informada não faz parte das opções!"),
   dueDate: z.string(),
+  link: z.string(),
 })
 
 const expense = ref<IAddExpense>({
@@ -108,6 +114,7 @@ const expense = ref<IAddExpense>({
   paymentDate: null,
   paymentCategory: "FIXED",
   dueDate: null,
+  link: ""
 });
 
 const onSubmit = async (): Promise<void> => {
@@ -167,6 +174,7 @@ const clearForm = () => {
     paymentDate: null,
     paymentCategory: "",
     dueDate: null,
+    link: ""
   };
 };
 </script>

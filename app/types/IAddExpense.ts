@@ -5,6 +5,7 @@ export interface IAddExpense {
     amount: number,
     paymentDate: any,
     paymentCategory: string,
-    dueDate: any
+    dueDate: any,
+    link: string
 }
 
