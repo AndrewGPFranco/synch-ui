@@ -1,11 +1,11 @@
 <template>
   <main class="flex flex-col w-full h-screen bg-linear-to-br from-gray-900 via-gray-950 to-gray-900 overflow-hidden">
     <section class="flex flex-col gap-3">
-      <ReporteCalculoDespesas 
-        :idTable="route.params.id as string"
+      <ReporteCalculoDespesas
+          :idTable="route.params.id as string"
       />
       <FormAddExpense
-        @update-expenses="updateExpenses"
+          @update-expenses="updateExpenses"
       />
     </section>
     <TableExpenses

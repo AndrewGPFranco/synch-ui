@@ -1,8 +1,8 @@
 <template>
   <UModal title="Reporte - Cálculo de Despesas"
-    description="O cálculo é feito com base em todas as despesas dessa tabela." v-model:open="isOpen">
+          description="O cálculo é feito com base em todas as despesas dessa tabela." v-model:open="isOpen">
     <UButton label="Cálculo Despesas" icon="i-heroicons-banknotes" size="lg"
-      class="fixed bottom-20 right-6 z-50 bg-linear-to-r from-gray-600 to-gray-700 hover:from-black hover:to-gray-600 cursor-pointer text-white font-semibold shadow-lg hover:shadow-gray-500/30 transition-all duration-300 transform hover:scale-105" />
+             class="fixed bottom-20 right-6 z-50 bg-linear-to-r from-gray-600 to-gray-700 hover:from-black hover:to-gray-600 cursor-pointer text-white font-semibold shadow-lg hover:shadow-gray-500/30 transition-all duration-300 transform hover:scale-105"/>
 
     <template #body>
       <div class="flex flex-col gap-4">
@@ -54,7 +54,7 @@ const calcula = async () => {
   const responseAPI = await financeStore.calculaDespesas(props.idTable);
 
   if (responseAPI.getError()) {
-    toast.add({ title: 'Erro', description: responseAPI.getResponse() as string, color: 'error' });
+    toast.add({title: 'Erro', description: responseAPI.getResponse() as string, color: 'error'});
     return;
   }
 

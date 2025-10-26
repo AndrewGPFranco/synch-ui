@@ -1,15 +1,15 @@
 <template>
   <UModal title="Convidar" description="* Convide um usuário para utilizar a tabela" v-model:open="props.isOpen"
-    @update:open="emit('close-modal')">
+          @update:open="emit('close-modal')">
     <template #body>
       <div class="w-full max-w-md mx-auto">
         <UForm :state="input.email" @submit.prevent="onSubmit" class="flex flex-col gap-3">
           <UFormField label="Email do convidado" name="email" class="text-gray-300">
-            <UInput type="email" placeholder="convidado@email.com" required v-model="input.email" />
+            <UInput type="email" placeholder="convidado@email.com" required v-model="input.email"/>
           </UFormField>
 
           <UButton type="submit" size="lg" block
-            class="mt-2 font-semibold bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-purple-500/20 cursor-pointer">
+                   class="mt-2 font-semibold bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-purple-500/20 cursor-pointer">
             Convidar
           </UButton>
         </UForm>
@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 import z from 'zod';
-import type { IConviteTabela } from '~/types/IConviteTabela';
+import type {IConviteTabela} from '~/types/IConviteTabela';
 
 const toast = useToast();
 

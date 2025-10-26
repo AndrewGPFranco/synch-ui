@@ -1,22 +1,22 @@
 <template>
   <UApp :toaster="{ duration: 2000, position: 'top-right' }">
-    <Navbar v-if="show" />
+    <Navbar v-if="show"/>
 
     <UMain>
       <NuxtLayout>
-        <NuxtPage />
+        <NuxtPage/>
       </NuxtLayout>
     </UMain>
 
-    <Footer v-if="show" />
+    <Footer v-if="show"/>
   </UApp>
 </template>
 
 <script lang="ts" setup>
-import { jwtDecode } from 'jwt-decode'
-import { ref, watch, onMounted } from 'vue'
-import { useRoute, useCookie } from 'nuxt/app'
-import type { IDecodeJWT } from './types/IDecodeJWT'
+import {jwtDecode} from 'jwt-decode'
+import {ref, watch, onMounted} from 'vue'
+import {useRoute, useCookie} from 'nuxt/app'
+import type {IDecodeJWT} from './types/IDecodeJWT'
 
 const route = useRoute()
 const show = ref<boolean>(true)

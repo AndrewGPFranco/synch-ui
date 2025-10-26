@@ -50,7 +50,8 @@
                    class="w-full bg-gray-800/70 text-gray-100 placeholder-gray-500 border-gray-700 focus:border-purple-500 focus:ring-purple-500 transition-all"/>
         </UFormField>
 
-        <UFormField label="Link Externo" description="* Caso seja uma compra a ser feita" name="link" class="w-full text-gray-300">
+        <UFormField label="Link Externo" description="* Caso seja uma compra a ser feita" name="link"
+                    class="w-full text-gray-300">
           <UInput v-model="expense.link" placeholder="Link externo" size="lg"
                   class="w-full bg-gray-800/70 text-gray-100 placeholder-gray-500 border-gray-700 focus:border-purple-500 focus:ring-purple-500 transition-all"/>
         </UFormField>

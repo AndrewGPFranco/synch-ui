@@ -1,8 +1,8 @@
-import { defineStore } from "pinia";
+import {defineStore} from "pinia";
 import ResponseAPI from "~/utils/ResponseAPI";
-import type { IExpense } from "~/types/IExpense";
-import type { IAddExpense } from "~/types/IAddExpense";
-import type { ITableFinance } from "~/types/ITableFinance";
+import type {IExpense} from "~/types/IExpense";
+import type {IAddExpense} from "~/types/IAddExpense";
+import type {ITableFinance} from "~/types/ITableFinance";
 
 interface ResponseAPILocal {
     response: any;

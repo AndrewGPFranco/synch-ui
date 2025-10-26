@@ -1,10 +1,10 @@
-import { defineStore } from "pinia";
-import { jwtDecode } from "jwt-decode";
-import type { IUser } from "~/types/IUser";
+import {defineStore} from "pinia";
+import {jwtDecode} from "jwt-decode";
+import type {IUser} from "~/types/IUser";
 import ResponseAPI from "@/utils/ResponseAPI";
-import { useFetch, useCookie } from 'nuxt/app';
-import type { IUserLogin } from "~/types/IUserLogin";
-import type { IDecodeJWT } from "~/types/IDecodeJWT";
+import {useFetch, useCookie} from 'nuxt/app';
+import type {IUserLogin} from "~/types/IUserLogin";
+import type {IDecodeJWT} from "~/types/IDecodeJWT";
 
 interface LoginResponse {
     response: string;
@@ -16,7 +16,7 @@ export const useAuthStore = defineStore("auth-store", {
     }),
     actions: {
         async login(input: IUserLogin): Promise<ResponseAPI<string>> {
-            const { data, error } = await useFetch<LoginResponse>('/api/v1/user/login', {
+            const {data, error} = await useFetch<LoginResponse>('/api/v1/user/login', {
                 baseURL: 'http://localhost:8080',
                 method: 'POST',
                 body: input,

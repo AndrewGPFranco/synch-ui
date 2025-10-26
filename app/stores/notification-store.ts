@@ -1,7 +1,7 @@
-import { defineStore } from "pinia";
+import {defineStore} from "pinia";
 import ResponseAPI from "~/utils/ResponseAPI";
-import type { INotification } from "~/types/INotification";
-import type { IConviteTabela } from "~/types/IConviteTabela";
+import type {INotification} from "~/types/INotification";
+import type {IConviteTabela} from "~/types/IConviteTabela";
 
 interface Response {
     response: any;
