@@ -1,8 +1,8 @@
-import {defineStore} from "pinia";
+import { defineStore } from "pinia";
 import ResponseAPI from "~/utils/ResponseAPI";
-import type {IExpense} from "~/types/IExpense";
-import type {IAddExpense} from "~/types/IAddExpense";
-import type {ITableFinance} from "~/types/ITableFinance";
+import type { IExpense } from "~/types/IExpense";
+import type { IAddExpense } from "~/types/IAddExpense";
+import type { ITableFinance } from "~/types/ITableFinance";
 
 interface ResponseAPILocal {
     response: any;
@@ -161,6 +161,24 @@ export const useFinanceStore = defineStore("finance-store", {
             } catch (error) {
                 console.error("Erro ao adicionar despesa:", error);
                 return new ResponseAPI(true, "Erro ao duplicar despesa");
+            }
+        },
+        async marcarDespesaComoPaga(idExpense: string): Promise<ResponseAPI<string>> {
+            const token = useCookie("token").value;
+
+            try {
+                await $fetch(`/api/v1/expense/marcar-como-paga/${idExpense}`, {
+                    baseURL: "http://localhost:8080",
+                    method: "PUT",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                return new ResponseAPI(false, "Despesa marcado como paga");
+            } catch (error) {
+                console.error("Erro ao adicionar despesa:", error);
+                return new ResponseAPI(true, "Erro ao atualizar pagamento da despesa!");
             }
         }
     },

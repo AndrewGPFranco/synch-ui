@@ -30,7 +30,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(["expense-duplicated"]);
+const emit = defineEmits(["expense-duplicated", "despesa-paga"]);
 
 const expensesCopy = ref<IExpense[]>([...props.expenses])
 
@@ -61,6 +61,19 @@ const duplicateExpense = async (idExpense: string) => {
   toast.add({title: 'Sucesso', description: responseAPI.getResponse(), color: 'success'})
 
   emit("expense-duplicated", props.idTable);
+}
+
+async function marcarDespesaComoPaga(idDespesa: string) {
+  const responseAPI = await financeStore.marcarDespesaComoPaga(idDespesa);
+
+  if (responseAPI.getError()) {
+    toast.add({title: 'Erro', description: responseAPI.getResponse(), color: 'error'});
+    return;
+  }
+
+  toast.add({title: 'Info', description: responseAPI.getResponse(), color: 'info'})
+
+  emit("despesa-paga", props.idTable);
 }
 
 const columns: TableColumn<IExpense>[] = [
@@ -195,6 +208,13 @@ const getRowItems = (row: TableRow<IExpense>) => {
       onClick: async () => {
         const idExpense = row.getValue("idExpense");
         await duplicateExpense(idExpense);
+      }
+    },
+    {
+      label: 'Marcar como Pago',
+      onClick: async () => {
+        const idExpense = row.getValue("idExpense");
+        await marcarDespesaComoPaga(idExpense);
       }
     }
   ]

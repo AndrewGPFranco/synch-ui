@@ -13,6 +13,7 @@
         :expenses="expenses"
         :idTable="route.params.id as string"
         @expense-duplicated="updateExpenses"
+        @despesa-paga="updateExpenses"
     />
   </main>
 </template>
