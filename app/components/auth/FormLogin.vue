@@ -26,7 +26,7 @@
 
     <p class="text-sm text-gray-400 mt-2">
       Ainda não tem conta?
-      <NuxtLink to="/auth/register" class="text-purple-400 hover:text-purple-300 hover:underline transition-colors">Cadastra-se</NuxtLink>
+      <NuxtLink to="/auth/register" class="text-purple-400 hover:text-purple-300 hover:underline transition-colors">Cadastre-se</NuxtLink>
     </p>
   </UForm>
 </template>
