@@ -3,6 +3,7 @@
     <section class="flex flex-col gap-3">
       <ReporteCalculoDespesas
           :idTable="route.params.id as string"
+          :lengthExpenses="expenses.length"
       />
       <FormAddExpense
           @update-expenses="updateExpenses"

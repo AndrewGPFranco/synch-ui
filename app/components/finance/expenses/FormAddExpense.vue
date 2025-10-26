@@ -19,6 +19,7 @@
           <UFormField label="Valor" name="amount" class="text-gray-300">
             <UInputNumber
                 v-model="expense.amount"
+                :step="0.01"
                 :format-options="{
                   style: 'currency',
                   currency: 'BRL',

@@ -5,7 +5,7 @@
              class="fixed bottom-20 right-6 z-50 bg-linear-to-r from-gray-600 to-gray-700 hover:from-black hover:to-gray-600 cursor-pointer text-white font-semibold shadow-lg hover:shadow-gray-500/30 transition-all duration-300 transform hover:scale-105"/>
 
     <template #body>
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4" v-if="props.lengthExpenses > 0">
         <UButton class="cursor-pointer" @click="calcula" :loading="isCalculating">
           Calcular Despesas
         </UButton>
@@ -21,6 +21,9 @@
           <p class="text-red-300">{{ erro }}</p>
         </div>
       </div>
+      <div v-else>
+        <span>Essa tabela não contém despesas no momento!</span>
+      </div>
     </template>
   </UModal>
 </template>
@@ -34,6 +37,10 @@ const isCalculating = ref<boolean>(false);
 const props = defineProps({
   idTable: {
     type: String,
+    required: true
+  },
+  lengthExpenses: {
+    type: Number,
     required: true
   }
 })
