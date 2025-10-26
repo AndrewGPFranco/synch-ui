@@ -23,8 +23,14 @@ const props = defineProps({
   expenses: {
     type: Array as PropType<IExpense[]>,
     required: true,
+  },
+  idTable: {
+    type: String,
+    required: true
   }
 });
+
+const emit = defineEmits(["expense-duplicated"]);
 
 const expensesCopy = ref<IExpense[]>([...props.expenses])
 
@@ -41,6 +47,20 @@ const deleteItem = async () => {
   deletedIds.add(idASerRemovido.value);
 
   expensesCopy.value = props.expenses.filter((item: IExpense) => !deletedIds.has(item.idExpense));
+}
+
+
+const duplicateExpense = async (idExpense: string) => {
+  const responseAPI = await financeStore.duplicateExpense(idExpense);
+
+  if (responseAPI.getError()) {
+    toast.add({ title: 'Erro', description: responseAPI.getResponse(), color: 'error' });
+    return;
+  }
+
+  toast.add({ title: 'Sucesso', description: responseAPI.getResponse(), color: 'success' })
+
+  emit("expense-duplicated", props.idTable);
 }
 
 const columns: TableColumn<IExpense>[] = [
@@ -168,6 +188,13 @@ const getRowItems = (row: TableRow<IExpense>) => {
       onClick: async () => {
         idASerRemovido.value = row.getValue("idExpense");
         isOpen.value = true;
+      }
+    },
+    {
+      label: 'Duplicar despesa',
+      onClick: async () => {
+        const idExpense = row.getValue("idExpense");
+        await duplicateExpense(idExpense);
       }
     }
   ]

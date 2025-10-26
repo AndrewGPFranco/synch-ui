@@ -144,6 +144,24 @@ export const useFinanceStore = defineStore("finance-store", {
                 console.error("Erro ao realizar cálculo de despesas.", error);
                 return new ResponseAPI(true, "Erro ao realizar cálculo de despesas.");
             }
+        },
+        async duplicateExpense(idExpense: string): Promise<ResponseAPI<string>> {
+            const token = useCookie("token").value;
+
+            try {
+                await $fetch(`/api/v1/expense/duplicate/${idExpense}`, {
+                    baseURL: "http://localhost:8080",
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                return new ResponseAPI(false, "Despesa duplicada com sucesso!");
+            } catch (error) {
+                console.error("Erro ao adicionar despesa:", error);
+                return new ResponseAPI(true, "Erro ao duplicar despesa");
+            }
         }
     },
 });

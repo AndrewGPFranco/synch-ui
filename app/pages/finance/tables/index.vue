@@ -1,5 +1,5 @@
 <template>
-  <main class="flex flex-col w-full h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-gray-900 overflow-hidden">
+  <main class="flex flex-col w-full h-screen bg-linear-to-br from-gray-900 via-gray-950 to-gray-900 overflow-hidden">
     <FormAddFinanceTable
         @update-tables="getTables"
     />

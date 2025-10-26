@@ -10,6 +10,8 @@
     </section>
     <TableExpenses
         :expenses="expenses"
+        :idTable="route.params.id as string"
+        @expense-duplicated="updateExpenses"
     />
   </main>
 </template>
