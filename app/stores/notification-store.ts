@@ -1,5 +1,7 @@
-import {defineStore} from "pinia";
-import type {INotification} from "~/types/INotification";
+import { defineStore } from "pinia";
+import ResponseAPI from "~/utils/ResponseAPI";
+import type { INotification } from "~/types/INotification";
+import type { IConviteTabela } from "~/types/IConviteTabela";
 
 interface Response {
     response: any;
@@ -66,5 +68,24 @@ export const useNotificationStore = defineStore("notifications-store", {
                 console.error("Erro ao marcar notificações como lida:", error);
             }
         },
+        async convidaUsuarioParaTabela(input: IConviteTabela): Promise<ResponseAPI<string>> {
+            const token = useCookie("token").value;
+
+            try {
+                await $fetch(`/api/v1/notification/new/access-table`, {
+                    baseURL: "http://localhost:8080",
+                    method: "POST",
+                    body: input,
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                return new ResponseAPI(false, "Convite enviado com sucesso!");
+            } catch (error) {
+                console.error("Erro ao adicionar despesa:", error);
+                return new ResponseAPI(true, "Ocorre um erro ao enviar convite, tente novamente!");
+            }
+        }
     },
 });

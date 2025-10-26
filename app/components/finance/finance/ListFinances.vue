@@ -1,26 +1,33 @@
 <template>
   <UTable :data="financesCopy" :columns="columns" class="w-full p-10" />
 
-  <ModalAsk :is-open="isOpen" message-ask="Tem certeza que deseja apagar a tabela e suas respectivas despesas?"
-    title="Deletar tabela" @close-modal="handleCloseModal" />
+  <ModalAsk :is-open="isOpenModalPergunta"
+    message-ask="Tem certeza que deseja apagar a tabela e suas respectivas despesas?" title="Deletar tabela"
+    @close-modal="handleCloseModal" />
+
+  <ModalConviteTabela :id-table="idTabelaParaConvite" :is-open="isOpenModalConvite"
+    @close-modal="handleCloseModalConvite" />
 </template>
 
 <script setup lang="ts">
 import type { IUser } from "~/types/IUser";
 import type { IExpense } from "~/types/IExpense";
 import { useFinanceStore } from "~/stores/finance-store";
-import type { ITableFinance } from "~/types/ITableFinance";
 import ModalAsk from "~/components/finance/ModalAsk.vue";
+import ModalConviteTabela from "./ModalConviteTabela.vue";
+import type { ITableFinance } from "~/types/ITableFinance";
 import { NuxtLink, UButton, UDropdownMenu } from "#components";
 //@ts-ignore
 import type { TableColumn, TableRow } from "#ui/components/Table.vue";
 
 const toast = useToast();
-const isOpen = ref<boolean>(false);
 const deletedIds = new Set<string>();
 const financeStore = useFinanceStore();
+const isOpenModalConvite = ref<boolean>(false);
+const isOpenModalPergunta = ref<boolean>(false);
 
 const idASerRemovido = ref<string>("");
+const idTabelaParaConvite = ref<string>("");
 
 const props = defineProps({
   tables: {
@@ -132,12 +139,19 @@ const getRowItems = (row: TableRow<ITableFinance>) => {
       type: 'separator'
     },
     {
+      label: 'Convidar',
+      onClick: async () => {
+        idTabelaParaConvite.value = row.getValue("idTable");
+        isOpenModalConvite.value = true;
+      }
+    },
+    {
       label: 'Remover tabela',
       onClick: async () => {
         idASerRemovido.value = row.getValue("idTable");
-        isOpen.value = true;
+        isOpenModalPergunta.value = true;
       }
-    }
+    },
   ]
 }
 
@@ -145,7 +159,7 @@ const handleCloseModal = (isDelete: boolean) => {
   if (isDelete)
     deleteTable();
 
-  isOpen.value = false;
+  isOpenModalPergunta.value = false;
 }
 
 const deleteTable = async () => {
@@ -158,11 +172,15 @@ const deleteTable = async () => {
 
   toast.add({ title: 'Sucesso', description: responseAPI.getResponse(), color: 'success' })
 
-  isOpen.value = false;
+  isOpenModalPergunta.value = false;
 
   deletedIds.add(idASerRemovido.value);
 
   financesCopy.value = props.tables.filter((item: ITableFinance) => !deletedIds.has(item.idTable));
+}
+
+function handleCloseModalConvite(): void {
+  isOpenModalConvite.value = false;
 }
 
 watch(() => props.tables, (newVal) => {

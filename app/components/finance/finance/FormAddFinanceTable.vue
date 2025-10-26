@@ -1,7 +1,7 @@
 <template>
   <UModal title="Criar tabela de despesas" v-model:open="isOpen">
     <UButton label="Adicionar Tabela" icon="i-heroicons-plus-circle" size="lg"
-             class="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-black hover:to-gray-600 cursor-pointer text-white font-semibold shadow-lg hover:shadow-gray-500/30 transition-all duration-300 transform hover:scale-105"/>
+             class="fixed bottom-6 right-6 z-50 bg-linear-to-r from-gray-600 to-gray-700 hover:from-black hover:to-gray-600 cursor-pointer text-white font-semibold shadow-lg hover:shadow-gray-500/30 transition-all duration-300 transform hover:scale-105"/>
 
     <template #body>
       <UForm :state="data.title" @submit.prevent="onSubmit" class="flex flex-col gap-6">
