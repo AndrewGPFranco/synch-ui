@@ -68,6 +68,7 @@
 
 <script setup lang="ts">
 import {z} from "zod";
+import {dateValueToDate} from "~/utils/DataUtils";
 import type {IAddExpense} from "~/types/IAddExpense";
 import {
   categories,
@@ -91,11 +92,6 @@ const selectCategory = () => {
 
 const selectMonth = () => {
   expense.value.month = months.get(expense.value.month) as string;
-};
-
-const dateValueToDate = (dateValue: any): Date | null => {
-  if (!dateValue) return null;
-  return new Date(dateValue.year, dateValue.month - 1, dateValue.day);
 };
 
 const schema = z.object({

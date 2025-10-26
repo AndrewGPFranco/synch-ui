@@ -5,6 +5,7 @@ import ResponseAPI from "@/utils/ResponseAPI";
 import {useFetch, useCookie} from 'nuxt/app';
 import type {IUserLogin} from "~/types/IUserLogin";
 import type {IDecodeJWT} from "~/types/IDecodeJWT";
+import type {IUserRegister} from "~/types/IUserRegister";
 
 interface LoginResponse {
     response: string;
@@ -62,6 +63,20 @@ export const useAuthStore = defineStore("auth-store", {
                 this.user = data.response;
             } catch (error) {
                 console.error("Erro ao buscar dados do usuário:", error);
+            }
+        },
+        async register(input: IUserRegister): Promise<ResponseAPI<string>> {
+            try {
+                const data = await $fetch<any>(`/api/v1/user/register`, {
+                    baseURL: 'http://localhost:8080',
+                    method: 'POST',
+                    body: input
+                });
+
+                return new ResponseAPI(false, "Cadastro realizado com sucesso!");
+            } catch (error) {
+                console.log(error);
+                return new ResponseAPI(true, "Ocorreu um erro no cadastro, revise os dados e tente novamente");
             }
         }
     },

@@ -129,7 +129,12 @@
 
 
 <script setup lang="ts">
+import {z} from "zod";
 import type {IUserRegister} from "~/types/IUserRegister";
+import {dateValueToDate} from "~/utils/DataUtils";
+
+const router = useRouter();
+const authStore = useAuthStore();
 
 const user = ref<IUserRegister>({
   name: "",
@@ -140,13 +145,23 @@ const user = ref<IUserRegister>({
   password: "",
 })
 
+const schema = z.object({
+  name: z.string("O nome é obrigatório!").max(30, "O nome deve ter no máximo 30 caracteres"),
+  email: z.email("O E-mail é obrigatório!").max(150, "O e-mail deve ter no máximo 150 caracteres"),
+  birthDate: z.string("A data de nascimento é obrigatória!"),
+  fullname: z.string("O nome completo é obrigatório!").max(255, "O nome completo deve ter no máximo 255 caracteres"),
+  nickname: z.string("O username é obrigatório").max(25, "O username deve ter no máximo 25 caracteres"),
+  password: z.string("A senha é obrigatória!").max(255, "A senha não pode conter mais que 255 caracteres")
+      .min(8, "A senha deve ter pelo menos 8 caracteres"),
+})
+
 const toast = useToast();
 const showSenha = ref<boolean>(false)
 const showConfirmacaoSenha = ref<boolean>(false)
 
 const confirmacaoSenha = ref<string>("");
 
-function onSubmit(): void {
+async function onSubmit(): Promise<void> {
   if (confirmacaoSenha.value !== user.value.password) {
     toast.add({
       title: "Senha",
@@ -155,5 +170,53 @@ function onSubmit(): void {
     })
     return;
   }
+
+  const payload = {
+    ...user.value,
+    birthDate: dateValueToDate(user.value.birthDate)?.toISOString().split("T")[0]
+  };
+
+  const validation = schema.safeParse(payload);
+
+  if (validation.error) {
+    const messages = validation.error.issues.map((issue) => issue.message).join(" e ");
+
+    toast.add({
+      title: "Problema com o cadastro",
+      description: messages,
+      color: "error",
+    });
+    return;
+  }
+
+  const responseAPI = await authStore.register(payload);
+
+  if (responseAPI.getError()) {
+    toast.add({
+      title: "Erro",
+      description: responseAPI.getResponse(),
+      color: "error",
+    });
+    return;
+  }
+
+  clearForm();
+
+  toast.add({
+    title: "Sucesso",
+    description: responseAPI.getResponse(),
+    color: "success",
+  });
+
+  await router.push("/auth/login");
+}
+
+function clearForm(): void {
+  user.value.name = "";
+  user.value.email = "";
+  user.value.birthDate = null;
+  user.value.fullname = "";
+  user.value.nickname = "";
+  user.value.password = "";
 }
 </script>

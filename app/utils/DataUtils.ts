@@ -5,3 +5,12 @@ export function formataDataBrasilAsString(data: Date) {
         year: 'numeric'
     })
 }
+
+/**
+ * Método para formatar a data do componente do Nuxt UI -> Date
+ * @param dateValue
+ */
+export function dateValueToDate(dateValue: any): Date | null {
+    if (!dateValue) return null;
+    return new Date(dateValue.year, dateValue.month - 1, dateValue.day);
+};
