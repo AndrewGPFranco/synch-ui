@@ -1,5 +1,5 @@
 export interface IConviteTabela {
     notificationType: string;
-    destinationUsers: string[];
+    destinationUser: string;
     financeTableId: string;
 }

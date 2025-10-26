@@ -62,7 +62,7 @@ const onSubmit = async () => {
 
   const data: IConviteTabela = {
     financeTableId: props.idTable,
-    destinationUsers: [input.value.email],
+    destinationUser: input.value.email,
     notificationType: "ACCESS_TABLE"
   }
 
@@ -86,4 +86,9 @@ const onSubmit = async () => {
   });
   emit("close-modal");
 }
+
+watch(() => props.isOpen, (newVal) => {
+  if (newVal === false)
+    input.value.email = ""
+})
 </script>

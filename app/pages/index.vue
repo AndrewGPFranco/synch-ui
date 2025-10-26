@@ -1,5 +1,5 @@
 <template>
-  <main class="w-full h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-gray-900">
+  <main class="w-full h-screen bg-linear-to-br from-gray-900 via-gray-950 to-gray-900">
     <h1>Bem vindo!</h1>
   </main>
 </template>

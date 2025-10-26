@@ -82,9 +82,13 @@ export const useNotificationStore = defineStore("notifications-store", {
                 });
 
                 return new ResponseAPI(false, "Convite enviado com sucesso!");
-            } catch (error) {
-                console.error("Erro ao adicionar despesa:", error);
-                return new ResponseAPI(true, "Ocorre um erro ao enviar convite, tente novamente!");
+            } catch (error: any) {
+                const errorMessage = error?.data?.error || error?.response?._data?.error || error?.message
+                    || "Ocorreu um erro desconhecido.";
+
+                console.error("Erro no convite:", errorMessage);
+
+                return new ResponseAPI(true, errorMessage);
             }
         }
     },
