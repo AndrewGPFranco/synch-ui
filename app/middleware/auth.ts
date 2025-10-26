@@ -3,7 +3,7 @@ import {defineNuxtRouteMiddleware, useCookie, navigateTo} from 'nuxt/app'
 const authStore = useAuthStore();
 
 export default defineNuxtRouteMiddleware((to, from) => {
-    const rotasPublicas = new Set(["auth-login", "user-register"]);
+    const rotasPublicas = new Set(["auth-login", "auth-register"]);
     const token = useCookie("token").value;
     const isValido = authStore.verificaTokenValido();
 

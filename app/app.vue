@@ -21,7 +21,7 @@ import type {IDecodeJWT} from './types/IDecodeJWT'
 const route = useRoute()
 const show = ref<boolean>(true)
 const authStore = useAuthStore()
-const rotasSemNavbarFooter = new Set(["/auth/login"])
+const rotasSemNavbarFooter = new Set(["/auth/login", "/auth/register"])
 
 const handleShowElements = () => {
   rotasSemNavbarFooter.has(route.path) ? show.value = false : show.value = true

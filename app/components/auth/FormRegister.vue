@@ -25,52 +25,25 @@
     </UButton>
 
     <p class="text-sm text-gray-400 mt-2">
-      Ainda não tem conta?
-      <NuxtLink to="/auth/register" class="text-purple-400 hover:text-purple-300 hover:underline transition-colors">Cadastra-se</NuxtLink>
+      Já tem conta?
+      <NuxtLink to="/auth/login" class="text-purple-400 hover:text-purple-300 hover:underline transition-colors">Login</NuxtLink>
     </p>
   </UForm>
 </template>
 
 <script setup lang="ts">
-import * as z from 'zod'
-import {useAuthStore} from "~/stores/auth-store";
-import type {IUserLogin} from "~/types/IUserLogin";
+import type {IUserRegister} from "~/types/IUserRegister";
 
-const schema = z.object({
-  email: z.email('E-mail inválido'),
-  password: z.string('A senha é obrigatória!').min(8, 'A senha deve conter no mínimo 8 caracteres')
+const user = ref<IUserRegister>({
+  name: "",
+  email: "",
+  birthDate: null,
+  fullname: "",
+  nickname: "",
+  password: "",
 })
 
-const toast = useToast()
-const router = useRouter();
-const authStore = useAuthStore();
+function onSubmit(): void {
 
-const user = ref<IUserLogin>({
-  email: "", password: ""
-})
-
-async function onSubmit() {
-  const validation = schema.safeParse(user.value);
-
-  if (validation.error) {
-    const messages = validation.error.issues.map(issue => issue.message).join(' e ');
-
-    toast.add({
-      title: 'Problema com Login',
-      description: messages,
-      color: 'error'
-    });
-    return;
-  }
-
-  const responseAPI = await authStore.login(user.value);
-
-  if (responseAPI.getError()) {
-    toast.add({title: 'Problema com Login', description: responseAPI.getResponse(), color: 'error'});
-    return;
-  }
-
-  toast.add({title: 'Sucesso', description: responseAPI.getResponse(), color: 'success'})
-  await router.push("/")
 }
 </script>
