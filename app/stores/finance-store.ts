@@ -3,6 +3,7 @@ import ResponseAPI from "~/utils/ResponseAPI";
 import type { IExpense } from "~/types/IExpense";
 import type { IAddExpense } from "~/types/IAddExpense";
 import type { ITableFinance } from "~/types/ITableFinance";
+import { IOperacoesCalculo } from '~/types/IOperacoesCalculo';
 
 interface ResponseAPILocal {
     response: any;
@@ -123,17 +124,23 @@ export const useFinanceStore = defineStore("finance-store", {
                 return new ResponseAPI(true, "Erro ao remover tabela");
             }
         },
-        async calculaDespesas(idTable: string): Promise<ResponseAPI<number | string>> {
+        async calculaDespesas(idTable: string, operacao: IOperacoesCalculo): Promise<ResponseAPI<number | string>> {
             const token = useCookie("token").value;
 
             interface OutputReporteCalculoDespesa {
                 resultado: number;
             }
 
+            const input = {
+                idTable: idTable,
+                operacao: operacao,
+            }
+
             try {
-                const data = await $fetch<OutputReporteCalculoDespesa>(`/api/v1/expense/calcula-despesas/${idTable}`, {
+                const data: OutputReporteCalculoDespesa = await $fetch<OutputReporteCalculoDespesa>(`/api/v1/expense/calcula-despesas`, {
                     baseURL: "http://localhost:8080",
-                    method: "GET",
+                    method: "POST",
+                    body: input,
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
