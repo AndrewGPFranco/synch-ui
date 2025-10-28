@@ -188,6 +188,8 @@ const columns: TableColumn<IExpense>[] = [
 ];
 
 const getRowItems = (row: TableRow<IExpense>) => {
+  const paymentDate: any = row.getValue("paymentDate");
+
   return [
     {
       type: 'label',
@@ -198,6 +200,7 @@ const getRowItems = (row: TableRow<IExpense>) => {
     },
     {
       label: 'Remover despesa',
+      show: true,
       onClick: async () => {
         idASerRemovido.value = row.getValue("idExpense");
         isOpen.value = true;
@@ -205,19 +208,21 @@ const getRowItems = (row: TableRow<IExpense>) => {
     },
     {
       label: 'Duplicar despesa',
+      show: true,
       onClick: async () => {
-        const idExpense = row.getValue("idExpense");
+        const idExpense: string = row.getValue("idExpense");
         await duplicateExpense(idExpense);
       }
     },
     {
       label: 'Marcar como Pago',
+      show: paymentDate === null,
       onClick: async () => {
-        const idExpense = row.getValue("idExpense");
+        const idExpense: string = row.getValue("idExpense");
         await marcarDespesaComoPaga(idExpense);
       }
     }
-  ]
+  ].filter(item => item.show !== false)
 }
 
 const handleCloseModal = (isDelete: boolean) => {
